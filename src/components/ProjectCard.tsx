@@ -35,6 +35,9 @@ export default function ProjectCard({ project, ufHoy }: Props) {
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
+  const descripcion =
+    project.descripcion?.trim() ||
+    "Consulta con nuestro equipo para conocer todos los detalles de este proyecto.";
 
   return (
     <>
@@ -87,10 +90,7 @@ export default function ProjectCard({ project, ufHoy }: Props) {
           </header>
 
           <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-mute">
-            <p>
-              Revisión legal y financiera incluida. Entregamos comparativa de
-              dividendos y escenarios de arriendo en menos de 48 horas.
-            </p>
+            <p>{descripcion}</p>
           </div>
 
           {/* CTAs minimalistas */}

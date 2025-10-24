@@ -20,6 +20,8 @@ const DESTACADOS: Project[] = [
     creditoInterno: true,
     imagen:
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200&auto=format&fit=crop",
+    descripcion:
+      "Revisión legal y financiera incluida. Entregamos comparativa de dividendos y escenarios de arriendo en menos de 48 horas.",
   },
   {
     id: "2",
@@ -31,6 +33,8 @@ const DESTACADOS: Project[] = [
     entrega: "inmediata",
     imagen:
       "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1200&auto=format&fit=crop",
+    descripcion:
+      "Ubicación estratégica a pasos de servicios y Metro, con terminaciones modernas y excelente proyección de arriendo.",
   },
   {
     id: "3",
@@ -42,6 +46,8 @@ const DESTACADOS: Project[] = [
     entrega: "en_blanco",
     imagen:
       "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop",
+    descripcion:
+      "Acceso a financiamiento flexible y amenities premium en una de las comunas con mejor calidad de vida del país.",
   },
 ];
 

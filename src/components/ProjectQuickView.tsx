@@ -5,7 +5,8 @@ import Link from "next/link";
 import Modal from "@/components/ui/Modal";
 import { clpFmt, ufFmt, ufToClp } from "@/lib/uf";
 import type { Project } from "@/types/project";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { listProjectImages } from "@/lib/gallery";
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -35,16 +36,32 @@ export default function ProjectQuickView({
   project,
   ufHoy,
 }: Props) {
-  const images = useMemo(
-    () => [
-      project.imagen,
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1600&auto=format&fit=crop",
-    ],
-    [project.imagen],
-  );
+  const [images, setImages] = useState<string[]>(() => [project.imagen]);
   const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      if (!open) {
+        return;
+      }
+      setIdx(0);
+      const urls = await listProjectImages(project.titulo);
+      const unique = Array.from(
+        new Set([...(urls ?? []), project.imagen].filter(Boolean)),
+      );
+      if (active) {
+        setImages(unique.length > 0 ? unique : [project.imagen]);
+      }
+    }
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, [open, project.titulo, project.imagen]);
+
   const next = () => setIdx((i) => (i + 1) % images.length);
   const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
 
@@ -56,6 +73,9 @@ export default function ProjectQuickView({
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
+  const descripcion =
+    project.descripcion?.trim() ||
+    "Consulta con nuestro equipo para conocer todos los detalles de este proyecto.";
 
   return (
     <Modal open={open} onClose={onClose} title={project.titulo}>
@@ -118,19 +138,9 @@ export default function ProjectQuickView({
             <div className="text-sm text-brand-mute">{clpFmt(clp)}</div>
           </div>
 
-          <ul className="space-y-2 text-sm text-brand-mute">
-            <li>• Cocina equipada + loggia, terminaciones de nivel premium.</li>
-            <li>
-              • Terraza panorámica en tipologías 2D/3D con orientación oriente.
-            </li>
-            <li>
-              • Amenities: cowork, rooftop gourmet, gimnasio equipado, pets
-              friendly.
-            </li>
-            <li>
-              • Cercano a Metro y ciclovías, eje gastronómico y servicios.
-            </li>
-          </ul>
+          <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-mute">
+            {descripcion}
+          </div>
 
           <div className="mt-auto flex flex-wrap items-center gap-2">
             <a

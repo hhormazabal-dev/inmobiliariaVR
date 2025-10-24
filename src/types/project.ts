@@ -8,5 +8,6 @@ export type Project = {
   entrega: "inmediata" | "en_verde" | "en_blanco";
   arriendoGarantizado?: boolean;
   creditoInterno?: boolean;
+  descripcion: string;
   imagen: string; // URL
 };
