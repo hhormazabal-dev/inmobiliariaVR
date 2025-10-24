@@ -3,7 +3,7 @@ import { Quote } from "lucide-react";
 const TESTIMONIALS = [
   {
     quote:
-      "Tenía claridad en el presupuesto pero no en el proyecto. La comparativa que prepararon en VREYES nos ahorró semanas. Sentí acompañamiento real.",
+      "Tenía claridad en el presupuesto pero no en el proyecto. La comparativa que prepararon en VR Inmobiliaria nos ahorró semanas. Sentí acompañamiento real.",
     author: "María José · Providencia",
     role: "Compradora primera vivienda",
   },
@@ -28,7 +28,8 @@ export default function TestimonialsShowcase() {
               Experiencias reales de acompañamiento premium.
             </h2>
             <p className="mt-4 text-base text-brand-mute">
-              Historias de quienes confiaron en VREYES para elegir hogar o potenciar su portafolio.
+              Historias de quienes confiaron en VR Inmobiliaria para elegir
+              hogar o potenciar su portafolio.
             </p>
           </header>
 
@@ -39,10 +40,16 @@ export default function TestimonialsShowcase() {
                 className="flex h-full flex-col gap-6 rounded-3xl border border-brand-navy/10 bg-white/90 p-6 shadow-[0_18px_50px_rgba(14,33,73,0.06)] transition hover:-translate-y-1 hover:border-brand-gold/25"
               >
                 <Quote className="h-8 w-8 text-brand-gold" strokeWidth={1.4} />
-                <blockquote className="text-base leading-relaxed text-brand-navy/90">{quote}</blockquote>
+                <blockquote className="text-base leading-relaxed text-brand-navy/90">
+                  {quote}
+                </blockquote>
                 <figcaption className="mt-auto">
-                  <p className="text-sm font-semibold text-brand-navy">{author}</p>
-                  <p className="text-xs uppercase tracking-[0.25em] text-brand-mute/70">{role}</p>
+                  <p className="text-sm font-semibold text-brand-navy">
+                    {author}
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.25em] text-brand-mute/70">
+                    {role}
+                  </p>
                 </figcaption>
               </figure>
             ))}

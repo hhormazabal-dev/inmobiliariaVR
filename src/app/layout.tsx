@@ -16,11 +16,16 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "VREYES — Proyectos Inmobiliarios",
-  description: "Compra con confianza: proyectos seleccionados, agenda online y asesoría cercana.",
+  title: "VR Inmobiliaria — Asesoría y Proyectos Seleccionados",
+  description:
+    "Reinventamos la forma de invertir y elegir tu hogar con acompañamiento cercano, proyectos curados y respuesta ágil.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="es" className={`${display.variable} ${sans.variable}`}>
       <body className="font-sans text-brand-text antialiased">

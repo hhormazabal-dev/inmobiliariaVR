@@ -5,9 +5,12 @@ import Image from "next/image";
 
 const MOMENTS = [
   {
-    title: "Diseñamos tu plan inmobiliario",
-    description: "Sesión inicial donde aterrizamos presupuesto, intención de compra y tiempos para construir un plan sin suposiciones.",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1600&auto=format&fit=crop",
+    // 1) Título/descr. reemplazados con el bloque de abajo
+    title: "DISEÑAMOS CONTIGO EL CAMINO IDEAL PARA TU PRÓXIMA PROPIEDAD",
+    description:
+      'Conversamos sobre tus metas, tiempos y presupuesto para presentarte opciones reales que se adapten a ti. "Tu inversión comienza con una asesoría transparente y cercana".',
+    image:
+      "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1600&auto=format&fit=crop",
     tag: "Plan personal",
     modal: {
       title: "Mapa claro desde el principio",
@@ -21,9 +24,12 @@ const MOMENTS = [
     },
   },
   {
-    title: "Gestionamos opciones filtradas",
-    description: "Te entregamos fichas con videos, análisis financiero y comparativas para que decidas con datos, no con intuición.",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop",
+    // 2) Reemplazo
+    title: "TE MOSTRAMOS LAS MEJORES OPCIONES DEL MERCADO",
+    description:
+      'Recibes acompañamiento personalizado de principio a fin: te ayudamos a encontrar el proyecto perfecto, conseguir tu financiamiento y resolver cada duda con total claridad. "Tú eliges con libertad, nosotros te guiamos con experiencia".',
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop",
     tag: "Selección curada",
     modal: {
       title: "Una vitrina que se siente tuya",
@@ -37,9 +43,12 @@ const MOMENTS = [
     },
   },
   {
-    title: "Cerramos y damos soporte postventa",
-    description: "Negociamos por ti, revisamos contratos y acompañamos la firma. Luego seguimos presentes en trámites y postventa.",
-    image: "https://images.unsplash.com/photo-1525182008055-f88b95ff7980?q=80&w=1600&auto=format&fit=crop",
+    // 3) Reemplazo
+    title: "TE ACOMPAÑAMOS HASTA LA FIRMA... Y DESPUÉS.",
+    description:
+      'Nos encargamos de cada detalle para que tu experiencia sea fluida, clara y sin estrés. "Queremos que disfrutes el proceso tanto como el resultado".',
+    image:
+      "https://images.unsplash.com/photo-1525182008055-f88b95ff7980?q=80&w=1600&auto=format&fit=crop",
     tag: "Cierre experto",
     modal: {
       title: "Firma segura y sin sorpresas",
@@ -63,17 +72,19 @@ export default function SignaturePillars() {
       <div className="absolute inset-x-10 top-0 -z-10 h-[420px] rounded-[48px] bg-sunrise-blur blur-[90px]" />
       <header className="max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
-          Nuestra forma de estar contigo
+          SOMOS VR INMOBILIARIA
         </p>
         <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-brand-navy md:text-[2.6rem]">
-          Cercanía real, sin libretos ni procesos impersonales.
+          CERCANÍA REAL, DECISIONES INTELIGENTES
         </h2>
         <p className="mt-3 text-sm text-brand-mute md:text-base">
-          Creemos en las conversaciones honestas, en mostrarte rostros detrás de la asesoría y en
-          disfrutar juntos cada logro.
+          En VR Inmobiliaria te acompañamos con asesoría humana, claridad y
+          respaldo en cada paso para que invertir o comprar tu hogar sea una
+          experiencia segura y satisfactoria.
         </p>
       </header>
 
+      {/* Tarjetas con imagen (ya sin duplicados) */}
       <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
         {MOMENTS.map(({ title, description, image, tag }, index) => (
           <button
@@ -96,10 +107,15 @@ export default function SignaturePillars() {
                 {tag}
               </span>
             </div>
+
             <div className="flex flex-1 flex-col justify-between gap-6 p-6">
               <div className="space-y-3">
-                <h3 className="text-xl font-semibold text-brand-navy">{title}</h3>
-                <p className="text-sm leading-relaxed text-brand-mute">{description}</p>
+                <h3 className="text-xl font-semibold text-brand-navy">
+                  {title}
+                </h3>
+                <p className="text-sm leading-relaxed text-brand-mute">
+                  {description}
+                </p>
               </div>
               <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-brand-navy/60">
                 <span>Siempre a tu lado</span>
@@ -112,6 +128,7 @@ export default function SignaturePillars() {
         ))}
       </div>
 
+      {/* Modal */}
       {openMoment ? (
         <div
           className="fixed inset-0 z-[90] flex items-center justify-center px-4 py-10"
@@ -136,13 +153,20 @@ export default function SignaturePillars() {
             </div>
             <div className="mt-6 space-y-4 text-brand-navy">
               <div>
-                <h3 className="text-2xl font-semibold">{openMoment.modal.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-brand-mute">{openMoment.modal.description}</p>
+                <h3 className="text-2xl font-semibold">
+                  {openMoment.modal.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-mute">
+                  {openMoment.modal.description}
+                </p>
               </div>
               <ul className="space-y-2 text-sm text-brand-navy/90">
                 {openMoment.modal.bullets.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <span className="mt-[6px] inline-block h-2 w-2 rounded-full bg-brand-gold" aria-hidden="true" />
+                    <span
+                      className="mt-[6px] inline-block h-2 w-2 rounded-full bg-brand-gold"
+                      aria-hidden="true"
+                    />
                     <span>{item}</span>
                   </li>
                 ))}

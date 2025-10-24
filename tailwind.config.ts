@@ -10,13 +10,14 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          navy: "#0E2149",   // títulos / primario
-          sand: "#F7F7F7",   // fondo cálido general
-          paper: "#FFFFFF",  // tarjetas
-          line: "#E5E7EB",   // bordes sutiles
-          gold: "#D4AF37",   // acento premium
-          text: "#0F172A",   // texto principal
-          mute: "#64748B",   // texto secundario
+          navy: "#0E2149", // títulos / primario
+          sand: "#F7F7F7", // fondo cálido general
+          paper: "#FFFFFF", // tarjetas
+          line: "#E5E7EB", // bordes sutiles
+          gold: "#D4AF37", // acento premium
+          green: "#3CB371", // acento natural
+          text: "#0F172A", // texto principal
+          mute: "#64748B", // texto secundario
         },
       },
       boxShadow: {

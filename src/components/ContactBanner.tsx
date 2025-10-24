@@ -3,10 +3,11 @@ import Link from "next/link";
 export default function ContactBanner() {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
-    "Hola, quiero coordinar una reunión con VREYES."
+    "Hola, quiero coordinar una asesoría con VR Inmobiliaria.",
   )}`;
   const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK || "https://cal.com/tu-org/visita-proyecto";
+    process.env.NEXT_PUBLIC_CAL_LINK ||
+    "https://cal.com/tu-org/visita-proyecto";
 
   return (
     <section className="mx-auto max-w-7xl px-6 pb-24 pt-10">
@@ -18,11 +19,11 @@ export default function ContactBanner() {
               Agenda ahora
             </p>
             <h2 className="font-display text-3xl font-semibold md:text-4xl">
-              Conversemos sobre tu próxima propiedad o inversión.
+              Agendar asesoría
             </h2>
             <p className="text-sm text-brand-mute md:text-base">
-              Agenda una videollamada o escríbenos por WhatsApp. Analizaremos tus objetivos y te
-              mostraremos en vivo alternativas seleccionadas para ti.
+              Acompañamiento personalizado para tu próxima propiedad. Agenda o
+              escríbenos ahora.
             </p>
           </div>
 
@@ -31,15 +32,15 @@ export default function ContactBanner() {
               href={calLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy px-6 py-3 text-white shadow-lg transition hover:shadow-xl"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-white shadow-[0_20px_45px_rgba(212,175,55,0.22)] transition hover:shadow-[0_24px_60px_rgba(212,175,55,0.28)]"
             >
-              Agendar reunión virtual
+              Agendar asesoría
             </a>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-navy/15 bg-white px-6 py-3 text-brand-navy transition hover:bg-brand-navy hover:text-white"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-green/20 bg-white px-6 py-3 text-brand-green transition hover:bg-brand-green hover:text-white"
             >
               Escribir por WhatsApp
             </a>

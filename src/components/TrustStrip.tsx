@@ -1,24 +1,33 @@
-const LOGOS = ["BCI", "Itau", "Scotiabank", "BancoEstado", "Santander"];
-
 export default function TrustStrip() {
   return (
-    <section className="border-y border-white/60 bg-white/80">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand-gold">
-            Partners & respaldo
+    <section className="border-y border-white/60 bg-white/85">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 md:flex-row md:items-center md:justify-between">
+        <div className="max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
+            ACOMPAÑAMIENTO REAL, CON RESPALDO PROFESIONAL
           </p>
-          <p className="mt-2 max-w-xl text-base text-brand-mute">
-            Alianzas bancarias y legales para asegurar una compra clara, con preaprobación y
-            documentación visible desde el día uno.
+          <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-brand-navy md:text-[2.2rem]">
+            No estás solo en el proceso.
+          </h2>
+          <p className="mt-3 text-base text-brand-mute">
+            Te asesoramos desde la selección del proyecto hasta la gestión del
+            crédito hipotecario, trabajando con instituciones de confianza para
+            que tomes decisiones seguras y rentables.
           </p>
         </div>
-        <div className="flex flex-wrap items-center justify-start gap-x-6 gap-y-3 text-brand-navy/60">
-          {LOGOS.map((logo) => (
-            <span key={logo} className="text-sm font-semibold tracking-[0.35em] uppercase">
-              {logo}
+        <div className="flex flex-col gap-4 rounded-[28px] border border-brand-gold/30 bg-white/70 p-6 text-sm text-brand-navy shadow-[0_20px_50px_rgba(212,175,55,0.18)]">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-green/20 text-brand-green">
+              ●
             </span>
-          ))}
+            <p className="font-semibold uppercase tracking-[0.2em] text-brand-navy/70">
+              Acompañamiento continuo
+            </p>
+          </div>
+          <p className="text-brand-mute">
+            Coordinamos evaluaciones financieras, documentación y hitos clave
+            para que avances con claridad en cada etapa.
+          </p>
         </div>
       </div>
     </section>
