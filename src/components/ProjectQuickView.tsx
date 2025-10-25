@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Modal from "@/components/ui/Modal";
-import { clpFmt, ufFmt, ufToClp } from "@/lib/uf";
+import { ufFmt } from "@/lib/uf";
 import type { Project } from "@/types/project";
 import { useEffect, useState } from "react";
 import { listProjectImages } from "@/lib/gallery";
@@ -27,15 +27,9 @@ type Props = {
   open: boolean;
   onClose: () => void;
   project: Project;
-  ufHoy?: number;
 };
 
-export default function ProjectQuickView({
-  open,
-  onClose,
-  project,
-  ufHoy,
-}: Props) {
+export default function ProjectQuickView({ open, onClose, project }: Props) {
   const [images, setImages] = useState<string[]>(() => [project.imagen]);
   const [idx, setIdx] = useState(0);
 
@@ -64,9 +58,9 @@ export default function ProjectQuickView({
 
   const next = () => setIdx((i) => (i + 1) % images.length);
   const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
+  const hasMultipleImages = images.length > 1;
 
   const uf = project.desdeUF;
-  const clp = ufToClp(uf, ufHoy);
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}). ¿Podemos coordinar una asesoría?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
@@ -76,6 +70,10 @@ export default function ProjectQuickView({
   const descripcion =
     project.descripcion?.trim() ||
     "Consulta con nuestro equipo para conocer todos los detalles de este proyecto.";
+  const entregaLabel =
+    project.entrega === "inmediata"
+      ? "Entrega inmediata"
+      : project.entrega.replace("_", " ");
 
   return (
     <Modal open={open} onClose={onClose} title={project.titulo}>
@@ -89,40 +87,46 @@ export default function ProjectQuickView({
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
-          <button
-            onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-3 py-2 text-brand-navy shadow-lg hover:bg-white"
-            aria-label="Anterior"
-          >
-            ‹
-          </button>
-          <button
-            onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 px-3 py-2 text-brand-navy shadow-lg hover:bg-white"
-            aria-label="Siguiente"
-          >
-            ›
-          </button>
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-            {images.map((src, i) => (
+          {hasMultipleImages && (
+            <>
               <button
-                key={src}
-                onClick={() => setIdx(i)}
-                className={`h-2 w-6 rounded-full transition ${
-                  i === idx ? "bg-brand-gold" : "bg-white/60"
-                }`}
-                aria-label={`Ir a imagen ${i + 1}`}
-              />
-            ))}
-          </div>
+                onClick={prev}
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/85 px-3 py-2 text-brand-navy shadow-lg transition hover:bg-white"
+                aria-label="Ver imagen anterior"
+              >
+                ‹
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/85 px-3 py-2 text-brand-navy shadow-lg transition hover:bg-white"
+                aria-label="Ver imagen siguiente"
+              >
+                ›
+              </button>
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+                {images.map((src, i) => (
+                  <button
+                    key={src}
+                    onClick={() => setIdx(i)}
+                    className={`h-2 w-6 rounded-full transition ${
+                      i === idx ? "bg-brand-gold" : "bg-white/60"
+                    }`}
+                    aria-label={`Ir a imagen ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Detalles */}
         <div className="flex flex-col gap-4 p-6">
           <div className="rounded-2xl bg-brand-sand/70 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-mute">
-              {project.entrega.replace("_", " ")}
-            </p>
+            {project.entrega === "inmediata" && (
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-mute">
+                {entregaLabel}
+              </p>
+            )}
             <p className="mt-1 text-sm text-brand-mute">
               {project.comuna} · {project.tipologias.join(" / ")}
             </p>
@@ -135,11 +139,20 @@ export default function ProjectQuickView({
             <div className="text-2xl font-semibold text-brand-navy">
               {ufFmt(uf)}
             </div>
-            <div className="text-sm text-brand-mute">{clpFmt(clp)}</div>
           </div>
 
           <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-mute">
             {descripcion}
+          </div>
+
+          <div className="rounded-2xl border border-brand-navy/10 bg-white/90 p-4 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy/60">
+              Entidades bancarias y mutuarias
+            </p>
+            <p className="mt-2 text-sm text-brand-mute">
+              Te acompañamos en la evaluación con bancos y mutuarias aliadas
+              para conseguir financiamiento preferente y condiciones claras.
+            </p>
           </div>
 
           <div className="mt-auto flex flex-wrap items-center gap-2">

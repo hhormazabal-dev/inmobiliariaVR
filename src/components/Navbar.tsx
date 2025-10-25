@@ -2,9 +2,144 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
-// Ícono WhatsApp minimal (SVG propio)
+type CornerLinesProps = {
+  pos: "top-right" | "bottom-left";
+  size?: number;
+  stroke?: number;
+  className?: string;
+};
+
+function CornerLines({
+  pos,
+  size = 120,
+  stroke = 2,
+  className,
+}: CornerLinesProps) {
+  const uid = useId().replace(/[^a-z0-9-]/gi, "");
+  const isTopRight = pos === "top-right";
+  const length = size * 0.68;
+
+  const horizontalStart = isTopRight ? size - length : 0;
+  const horizontalEnd = isTopRight ? size : length;
+  const horizontalY = isTopRight ? stroke / 2 : size - stroke / 2;
+
+  const verticalStart = isTopRight ? 0 : size - length;
+  const verticalEnd = isTopRight ? length : size;
+  const verticalX = isTopRight ? size - stroke / 2 : stroke / 2;
+
+  const shadowOffset = stroke + 2;
+  const shadowHorizontalY = isTopRight
+    ? horizontalY + shadowOffset
+    : horizontalY - shadowOffset;
+  const shadowVerticalX = isTopRight
+    ? verticalX - shadowOffset
+    : verticalX + shadowOffset;
+
+  const positionClass = isTopRight ? "top-0 right-0" : "bottom-0 left-0";
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      aria-hidden="true"
+      className={`pointer-events-none absolute ${positionClass} opacity-80 ${className ?? ""}`}
+      fill="none"
+    >
+      <defs>
+        <linearGradient
+          id={`${uid}-gold-h`}
+          x1={horizontalStart}
+          y1={horizontalY}
+          x2={horizontalEnd}
+          y2={horizontalY}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="rgba(212,175,55,0.9)" />
+          <stop offset="1" stopColor="rgba(212,175,55,0)" />
+        </linearGradient>
+        <linearGradient
+          id={`${uid}-gold-v`}
+          x1={verticalX}
+          y1={verticalStart}
+          x2={verticalX}
+          y2={verticalEnd}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="rgba(212,175,55,0.9)" />
+          <stop offset="1" stopColor="rgba(212,175,55,0)" />
+        </linearGradient>
+        <linearGradient
+          id={`${uid}-shadow-h`}
+          x1={horizontalStart}
+          y1={shadowHorizontalY}
+          x2={horizontalEnd}
+          y2={shadowHorizontalY}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="rgba(14,33,73,0.18)" />
+          <stop offset="1" stopColor="rgba(14,33,73,0)" />
+        </linearGradient>
+        <linearGradient
+          id={`${uid}-shadow-v`}
+          x1={shadowVerticalX}
+          y1={verticalStart}
+          x2={shadowVerticalX}
+          y2={verticalEnd}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="rgba(14,33,73,0.18)" />
+          <stop offset="1" stopColor="rgba(14,33,73,0)" />
+        </linearGradient>
+      </defs>
+
+      <line
+        x1={horizontalStart}
+        y1={horizontalY}
+        x2={horizontalEnd}
+        y2={horizontalY}
+        stroke={`url(#${uid}-gold-h)`}
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1={verticalX}
+        y1={verticalStart}
+        x2={verticalX}
+        y2={verticalEnd}
+        stroke={`url(#${uid}-gold-v)`}
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1={horizontalStart}
+        y1={shadowHorizontalY}
+        x2={horizontalEnd}
+        y2={shadowHorizontalY}
+        stroke={`url(#${uid}-shadow-h)`}
+        strokeWidth={Math.max(0.5, stroke - 0.5)}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1={shadowVerticalX}
+        y1={verticalStart}
+        x2={shadowVerticalX}
+        y2={verticalEnd}
+        stroke={`url(#${uid}-shadow-v)`}
+        strokeWidth={Math.max(0.5, stroke - 0.5)}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+/* WhatsApp minimal */
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
@@ -20,7 +155,7 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-// Solo estos dos ítems
+/* NAV */
 const NAV = [
   { href: "/proyectos", label: "Proyectos" },
   { href: "/nosotros", label: "Nosotros" },
@@ -32,7 +167,7 @@ export default function Navbar() {
   const [elevated, setElevated] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setElevated(window.scrollY > 6);
+    const onScroll = () => setElevated(window.scrollY > 4);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -51,107 +186,113 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/80 backdrop-blur-2xl transition-shadow ${
-        elevated ? "shadow-[0_12px_40px_rgba(14,33,73,0.08)]" : "shadow-none"
-      }`}
+      className={`
+        relative z-40 overflow-hidden
+        bg-[linear-gradient(90deg,rgba(241,237,229,0.96)_0%,rgba(255,255,255,0.94)_100%)]
+        backdrop-blur-xl
+        ${elevated ? "shadow-[0_8px_28px_rgba(0,0,0,0.06)]" : "shadow-none"}
+        border-b border-[rgba(212,175,55,0.35)]
+      `}
     >
       {/* Top bar */}
       <div className="hidden border-b border-white/60 bg-brand-sand/80 text-[13px] text-brand-mute md:block">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
-          <p className="tracking-wide">
-            Acompañamiento personalizado para tu próxima propiedad. Agenda o
-            escríbenos ahora.
-          </p>
-          <div className="flex items-center gap-4">
-            <a
-              href="tel:+56212345678"
-              className="hover:underline underline-offset-4"
-            >
-              +56 2 1234 5678
-            </a>
-            <span className="text-brand-navy/30">|</span>
-            <a
-              href="mailto:contacto@vreyes.cl"
-              className="hover:underline underline-offset-4"
-            >
-              contacto@vreyes.cl
-            </a>
+        <div className="relative mx-auto max-w-7xl px-6 py-2">
+          <CornerLines pos="top-right" />
+          <div className="flex items-center justify-between">
+            <p className="tracking-wide">
+              Acompañamiento personalizado para tu próxima propiedad. Agenda o
+              escríbenos ahora.
+            </p>
+            <div className="flex items-center gap-4">
+              <a
+                href="tel:+56976943264"
+                className="hover:underline underline-offset-4"
+              >
+                +56 9 7694 3264
+              </a>
+              <span className="text-brand-navy/30">|</span>
+              <a
+                href="mailto:mtbollmann@vreyes.cl"
+                className="hover:underline underline-offset-4"
+              >
+                mtbollmann@vreyes.cl
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main bar */}
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
-        {/* Marca */}
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
-            V
-          </div>
-          <span className="select-none text-[18px] font-semibold tracking-tight text-brand-navy">
-            VR Inmobiliaria
-          </span>
-        </Link>
+      <div className="relative mx-auto max-w-7xl px-4 md:px-6">
+        <CornerLines pos="bottom-left" />
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
+              V
+            </div>
+            <span className="select-none text-[18px] font-semibold tracking-tight text-brand-navy">
+              VR Inmobiliaria
+            </span>
+          </Link>
 
-        {/* Nav desktop */}
-        <nav className="hidden items-center gap-2 md:flex">
-          {NAV.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`relative rounded-lg px-3 py-2 text-sm transition ${
-                isActive(href)
-                  ? "text-brand-navy after:absolute after:left-3 after:right-3 after:-bottom-[2px] after:h-[2px] after:bg-brand-gold"
-                  : "text-brand-mute hover:text-brand-navy"
-              }`}
+          <nav className="hidden items-center gap-2 md:flex">
+            {NAV.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`relative rounded-lg px-3 py-2 text-sm tracking-wide transition ${
+                  isActive(href)
+                    ? "text-brand-navy after:absolute after:left-3 after:right-3 after:-bottom-[4px] after:h-[2px] after:bg-[rgba(212,175,55,0.95)]"
+                    : "text-brand-mute hover:text-brand-navy"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-2 md:flex">
+            <a
+              href={calLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(212,175,55,0.18)] transition hover:shadow-[0_18px_40px_rgba(212,175,55,0.25)]"
             >
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* CTAs (se mantienen) */}
-        <div className="hidden items-center gap-2 md:flex">
-          <a
-            href={calLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(212,175,55,0.18)] transition hover:shadow-[0_18px_40px_rgba(212,175,55,0.25)]"
-          >
-            Agendar asesoría
-          </a>
-          <a
-            href={waHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-4 py-2 text-sm font-semibold text-brand-green hover:bg-brand-green hover:text-white"
-          >
-            <WhatsAppIcon className="h-4 w-4" /> WhatsApp
-          </a>
-          <button
-            className="md:hidden"
-            aria-label="Abrir menú"
-            onClick={() => setOpen((v) => !v)}
-          />
-        </div>
-
-        {/* Hamburguesa mobile */}
-        <button
-          className="inline-flex items-center justify-center rounded-lg border border-brand-navy/15 bg-white p-2 text-brand-navy md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Abrir menú"
-        >
-          <span className="sr-only">Abrir menú</span>
-          <div className="h-4 w-5">
-            <div className="mb-[5px] h-[2px] w-full bg-current" />
-            <div className="mb-[5px] h-[2px] w-full bg-current" />
-            <div className="h-[2px] w-full bg-current" />
+              Agendar asesoría
+            </a>
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-4 py-2 text-sm font-semibold text-brand-green hover:bg-brand-green hover:text-white"
+            >
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp
+            </a>
+            <button
+              className="md:hidden"
+              aria-label="Abrir menú"
+              onClick={() => setOpen((v) => !v)}
+            />
           </div>
-        </button>
+
+          <button
+            className="inline-flex items-center justify-center rounded-lg border border-brand-navy/15 bg-white/90 p-2 text-brand-navy md:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Abrir menú"
+          >
+            <span className="sr-only">Abrir menú</span>
+            <div className="h-4 w-5">
+              <div className="mb-[5px] h-[2px] w-full bg-current" />
+              <div className="mb-[5px] h-[2px] w-full bg-current" />
+              <div className="h-[2px] w-full bg-current" />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Panel mobile */}
       {open && (
-        <div className="border-t border-white/60 bg-white/95 md:hidden">
+        <div className="border-t border-[rgba(212,175,55,0.25)] bg-[rgba(255,255,255,0.96)] md:hidden">
           <nav className="mx-auto max-w-7xl px-6 py-4">
             <ul className="flex flex-col gap-1">
               {NAV.map(({ href, label }) => (
@@ -162,7 +303,7 @@ export default function Navbar() {
                     className={`block rounded-lg px-3 py-2 text-[15px] ${
                       isActive(href)
                         ? "bg-brand-navy/5 text-brand-navy"
-                        : "text-brand-mute hover:bg-brand-sand/80"
+                        : "text-brand-mute hover:bg-[rgba(241,237,229,0.7)]"
                     }`}
                   >
                     {label}

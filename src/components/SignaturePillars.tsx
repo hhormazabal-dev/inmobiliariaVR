@@ -72,7 +72,7 @@ export default function SignaturePillars() {
       <div className="absolute inset-x-10 top-0 -z-10 h-[420px] rounded-[48px] bg-sunrise-blur blur-[90px]" />
       <header className="max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
-          SOMOS VR INMOBILIARIA
+          SOMOS <span className="tracking-normal">VR</span> INMOBILIARIA
         </p>
         <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-brand-navy md:text-[2.6rem]">
           CERCANÍA REAL, DECISIONES INTELIGENTES
@@ -117,10 +117,9 @@ export default function SignaturePillars() {
                   {description}
                 </p>
               </div>
-              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-brand-navy/60">
-                <span>Siempre a tu lado</span>
-                <span className="rounded-full bg-brand-gold/20 px-3 py-1 text-[10px] text-brand-navy">
-                  Ver detalle
+              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy/60">
+                <span className="rounded-full bg-brand-gold/20 px-4 py-1 text-[10px] text-brand-navy">
+                  Siempre a tu lado
                 </span>
               </div>
             </div>

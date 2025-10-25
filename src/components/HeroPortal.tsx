@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
@@ -22,6 +22,14 @@ export default function HeroPortal() {
   const [ufMin, setUfMin] = useState("");
   const [ufMax, setUfMax] = useState("");
 
+  const heroPattern: CSSProperties = {
+    backgroundImage:
+      "linear-gradient(135deg, transparent 0, transparent calc(100% - 3px), rgba(212,175,55,0.32) calc(100% - 3px)), linear-gradient(135deg, rgba(14,33,73,0.22) 0 3px, transparent 3px), linear-gradient(225deg, transparent 0, transparent calc(100% - 2px), rgba(14,33,73,0.24) calc(100% - 2px)), linear-gradient(225deg, rgba(212,175,55,0.22) 0 2px, transparent 2px)",
+    backgroundSize: "280px 180px, 280px 180px, 220px 160px, 220px 160px",
+    backgroundPosition: "top right, top right, bottom left, bottom left",
+    backgroundRepeat: "no-repeat",
+  };
+
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (comuna) params.set("comuna", comuna);
@@ -31,7 +39,10 @@ export default function HeroPortal() {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-br-[80px] bg-[#f6f0e7]">
+    <section
+      className="relative overflow-hidden rounded-br-[80px] bg-[#f6f0e7]"
+      style={heroPattern}
+    >
       {/* Fondo */}
       <div className="absolute inset-0">
         <Image
@@ -46,54 +57,13 @@ export default function HeroPortal() {
         <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-transparent to-transparent" />
       </div>
 
-      {/* Headline centrado superior */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.85, ease: "easeOut" }}
-        className="relative z-10 mx-auto max-w-5xl px-6 pt-10 text-center md:pt-16"
-      >
-        <h2 className="inline-block rounded-full border border-brand-gold/40 bg-white/70 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-navy shadow-sm md:text-xs">
-          REINVENTAMOS LA FORMA DE INVERTIR Y ELEGIR TU HOGAR
-        </h2>
-      </motion.div>
-
-      {/* Flechas decorativas (solo desktop) */}
-      <div className="pointer-events-none absolute left-6 top-6 hidden h-20 w-20 text-brand-navy/50 md:block">
-        <svg viewBox="0 0 70 70" fill="none" className="h-full w-full">
-          <path
-            d="M66 10c-18 6-28 12-40 26"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <path
-            d="M19 33l6 1m-6-1l3-5"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-      <div className="pointer-events-none absolute right-10 bottom-24 hidden h-20 w-20 text-brand-navy/50 md:block">
-        <svg
-          viewBox="0 0 70 70"
-          fill="none"
-          className="h-full w-full rotate-12"
-        >
-          <path
-            d="M6 60c18-6 28-12 40-26"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <path
-            d="M51 37l-6-1m6 1l-3 5"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </svg>
+      {/* Líneas estructurales (decorativas) */}
+      <div className="pointer-events-none absolute inset-0 hidden md:block">
+        <span className="absolute top-16 right-16 h-24 w-px bg-brand-gold/60" />
+        <span className="absolute top-16 right-16 h-px w-28 bg-brand-navy/50" />
+        <span className="absolute bottom-16 left-20 h-24 w-px bg-brand-navy/35" />
+        <span className="absolute bottom-16 left-20 h-px w-32 bg-brand-gold/45" />
+        <span className="absolute bottom-24 left-36 h-12 w-24 border border-brand-navy/15" />
       </div>
 
       {/* Contenido principal */}
@@ -105,7 +75,8 @@ export default function HeroPortal() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="mt-4 font-display text-4xl font-semibold leading-tight text-brand-navy md:mt-6 md:text-6xl"
           >
-            Asesoría de autor para elegir tu próximo hogar en Santiago.
+            Reinventamos la forma de invertir y elegir tu próximo hogar en
+            Santiago.
           </motion.h1>
 
           {/* (Párrafo eliminado a tu solicitud) */}

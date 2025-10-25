@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { clpFmt, ufFmt, ufToClp } from "@/lib/uf";
+import { ufFmt } from "@/lib/uf";
 import type { Project } from "@/types/project";
 import ProjectQuickView from "@/components/ProjectQuickView";
 
@@ -23,12 +23,11 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-type Props = { project: Project; ufHoy?: number };
+type Props = { project: Project };
 
-export default function ProjectCard({ project, ufHoy }: Props) {
+export default function ProjectCard({ project }: Props) {
   const [open, setOpen] = useState(false);
 
-  const clp = ufToClp(project.desdeUF, ufHoy);
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}) desde ${project.desdeUF} UF. ¿Podemos coordinar una asesoría?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
@@ -62,9 +61,11 @@ export default function ProjectCard({ project, ufHoy }: Props) {
               Crédito interno
             </span>
           )}
-          <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-brand-mute">
-            {project.entrega.replace("_", " ")}
-          </span>
+          {project.entrega === "inmediata" && (
+            <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-brand-mute">
+              Entrega inmediata
+            </span>
+          )}
         </div>
 
         {/* Contenido */}
@@ -85,7 +86,6 @@ export default function ProjectCard({ project, ufHoy }: Props) {
               <div className="text-base font-semibold text-brand-navy">
                 {ufFmt(project.desdeUF)}
               </div>
-              <div className="text-xs text-brand-mute">{clpFmt(clp)}</div>
             </div>
           </header>
 
@@ -137,7 +137,6 @@ export default function ProjectCard({ project, ufHoy }: Props) {
         open={open}
         onClose={() => setOpen(false)}
         project={project}
-        ufHoy={ufHoy}
       />
     </>
   );
