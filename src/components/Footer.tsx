@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { useId } from "react";
+import { useId, useState } from "react";
+import Modal from "@/components/ui/Modal";
 
 type CornerLinesProps = {
   pos: "top-right" | "bottom-left";
@@ -159,183 +162,257 @@ export default function Footer() {
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
+  const formAction =
+    process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION ||
+    "https://formsubmit.co/mtbollmann@vreyes.cl";
+  const [open, setOpen] = useState(false);
 
   return (
-    <footer className="relative mt-24 overflow-hidden border-t border-white/70 bg-white/85">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="relative">
-          <CornerLines pos="top-right" className="hidden md:block" />
-          <CornerLines pos="bottom-left" className="hidden md:block" />
-          <div className="relative z-10">
-            <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
-              {/* Marca & propósito */}
-              <div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
-                    V
+    <>
+      <footer className="relative mt-24 overflow-hidden border-t border-white/70 bg-white/85">
+        <div className="mx-auto max-w-7xl px-6 py-16">
+          <div className="relative">
+            <CornerLines pos="top-right" className="hidden md:block" />
+            <CornerLines pos="bottom-left" className="hidden md:block" />
+            <div className="relative z-10">
+              <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+                {/* Marca & propósito */}
+                <div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
+                      V
+                    </div>
+                    <span className="text-[18px] font-semibold text-brand-navy">
+                      VR Inmobiliaria
+                    </span>
                   </div>
-                  <span className="text-[18px] font-semibold text-brand-navy">
-                    VR Inmobiliaria
-                  </span>
+                  <p className="mt-4 text-[14px] leading-6 text-brand-mute">
+                    Acompañamos tu decisión con información clara, asesoría
+                    cercana y procesos simples de principio a fin.
+                  </p>
+
+                  {/* Confianza / sellos (placeholder de texto) */}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
+                      Asesoría certificada
+                    </span>
+                    <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
+                      Análisis financiero personalizado
+                    </span>
+                    <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
+                      Documentación transparente
+                    </span>
+                  </div>
                 </div>
-                <p className="mt-4 text-[14px] leading-6 text-brand-mute">
-                  Acompañamos tu decisión con información clara, asesoría
-                  cercana y procesos simples de principio a fin.
+
+                {/* Navegación */}
+                <div>
+                  <h4 className="text-[13px] font-semibold uppercase tracking-[0.25em] text-brand-navy">
+                    Navegación
+                  </h4>
+                  <ul className="mt-4 space-y-2 text-[14px] text-brand-mute">
+                    <li>
+                      <Link
+                        href="/proyectos"
+                        className="hover:underline underline-offset-4"
+                      >
+                        Proyectos
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/nosotros"
+                        className="hover:underline underline-offset-4"
+                      >
+                        Nosotros
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/contacto"
+                        className="hover:underline underline-offset-4"
+                      >
+                        Contacto
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-[13px] font-semibold uppercase tracking-[0.25em] text-brand-navy">
+                    Escríbenos
+                  </h4>
+                  <div className="mt-3 flex flex-col gap-3 text-sm text-brand-mute">
+                    <p>
+                      Completa tus datos y te contactaremos dentro de las
+                      próximas 24 horas hábiles.
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setOpen(true)}
+                        className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-navy/10 bg-white px-5 py-2 text-sm font-semibold text-brand-navy shadow-[0_10px_30px_rgba(14,33,73,0.08)] transition hover:border-brand-navy/25 hover:text-brand-navy/90 hover:shadow-[0_16px_40px_rgba(14,33,73,0.12)]"
+                      >
+                        Abrir formulario
+                      </button>
+                      <div className="inline-flex items-center gap-3 text-sm text-brand-mute">
+                        <span>o escríbenos directo</span>
+                        <a
+                          href={waHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-4 py-2 text-sm font-semibold text-brand-green hover:bg-brand-green hover:text-white"
+                        >
+                          <WhatsAppIcon className="h-4 w-4" />
+                          WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                    <p className="font-semibold text-brand-navy">
+                      También puedes escribirnos:
+                    </p>
+                    <p>
+                      <a
+                        href="mailto:mtbollmann@vreyes.cl"
+                        className="hover:underline underline-offset-4"
+                      >
+                        mtbollmann@vreyes.cl
+                      </a>
+                      {" · "}
+                      <a
+                        href="tel:+56976943264"
+                        className="hover:underline underline-offset-4"
+                      >
+                        +56 9 7694 3264
+                      </a>
+                    </p>
+                    <p>San Pío X 2475, Oficina 50, Providencia</p>
+                    <p>
+                      <a
+                        href={calLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full border border-brand-navy/15 px-4 py-1.5 text-sm font-semibold text-brand-navy hover:bg-brand-navy/5"
+                      >
+                        Agendar asesoría
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Legal */}
+              <div className="mt-12 border-t border-white/60 pt-6 text-[13px] text-brand-mute md:flex md:items-center md:justify-between">
+                <p>
+                  © {new Date().getFullYear()} VR Inmobiliaria — Todos los
+                  derechos reservados.
                 </p>
-
-                {/* Confianza / sellos (placeholder de texto) */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
-                    Asesoría certificada
-                  </span>
-                  <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
-                    Análisis financiero personalizado
-                  </span>
-                  <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
-                    Documentación transparente
-                  </span>
-                </div>
-              </div>
-
-              {/* Navegación */}
-              <div>
-                <h4 className="text-[13px] font-semibold uppercase tracking-[0.25em] text-brand-navy">
-                  Navegación
-                </h4>
-                <ul className="mt-4 space-y-2 text-[14px] text-brand-mute">
-                  <li>
-                    <Link
-                      href="/proyectos"
-                      className="hover:underline underline-offset-4"
-                    >
-                      Proyectos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/nosotros"
-                      className="hover:underline underline-offset-4"
-                    >
-                      Nosotros
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/contacto"
-                      className="hover:underline underline-offset-4"
-                    >
-                      Contacto
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Contacto (cercanía) */}
-              <div>
-                <h4 className="text-[13px] font-semibold uppercase tracking-[0.25em] text-brand-navy">
-                  Contacto
-                </h4>
-                <ul className="mt-4 space-y-2 text-[14px] text-brand-mute">
-                  <li>
-                    <a
-                      href="tel:+56976943264"
-                      className="hover:underline underline-offset-4"
-                    >
-                      +56 9 7694 3264
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="mailto:mtbollmann@vreyes.cl"
-                      className="hover:underline underline-offset-4"
-                    >
-                      mtbollmann@vreyes.cl
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://instagram.com/vreyes.inmo"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline underline-offset-4"
-                    >
-                      @vreyes.inmo
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://www.vreyes.cl"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline underline-offset-4"
-                    >
-                      www.vreyes.cl
-                    </a>
-                  </li>
-                  <li>
-                    <span>San Pío X 2475, Oficina 50, Providencia</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Acciones rápidas */}
-              <div>
-                <h4 className="text-[13px] font-semibold uppercase tracking-[0.25em] text-brand-navy">
-                  ¿Agendamos?
-                </h4>
-                <div className="mt-3 flex flex-col gap-2">
-                  <a
-                    href={calLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-2 text-center text-[14px] font-semibold text-white shadow-[0_16px_40px_rgba(212,175,55,0.22)] hover:shadow-[0_20px_60px_rgba(212,175,55,0.28)]"
-                  >
-                    Agendar asesoría
-                  </a>
-                  <a
-                    href={waHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-5 py-2 text-[14px] font-semibold text-brand-green hover:bg-brand-green hover:text-white"
-                  >
-                    <WhatsAppIcon className="h-4 w-4" />
-                    WhatsApp
-                  </a>
+                <div className="mt-3 flex flex-wrap gap-3 text-brand-mute md:mt-0">
                   <Link
-                    href="/contacto"
-                    className="rounded-full border border-brand-navy/10 bg-white px-5 py-2 text-center text-[14px] font-semibold text-brand-navy hover:bg-white/90"
+                    href="/legal/terminos"
+                    className="hover:underline underline-offset-4"
                   >
-                    Formulario de contacto
+                    Términos
+                  </Link>
+                  <span>·</span>
+                  <Link
+                    href="/legal/privacidad"
+                    className="hover:underline underline-offset-4"
+                  >
+                    Privacidad
                   </Link>
                 </div>
               </div>
             </div>
-
-            {/* Legal */}
-            <div className="mt-12 border-t border-white/60 pt-6 text-[13px] text-brand-mute md:flex md:items-center md:justify-between">
-              <p>
-                © {new Date().getFullYear()} VR Inmobiliaria — Todos los
-                derechos reservados.
-              </p>
-              <div className="mt-3 flex flex-wrap gap-3 text-brand-mute md:mt-0">
-                <Link
-                  href="/legal/terminos"
-                  className="hover:underline underline-offset-4"
-                >
-                  Términos
-                </Link>
-                <span>·</span>
-                <Link
-                  href="/legal/privacidad"
-                  className="hover:underline underline-offset-4"
-                >
-                  Privacidad
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Coordinemos una asesoría"
+      >
+        <div className="space-y-5 bg-white/90 p-6 text-brand-navy backdrop-blur-xl">
+          <p className="text-sm text-brand-mute">
+            Déjanos tus datos y un miembro del equipo te contactará en menos de
+            24 horas hábiles.
+          </p>
+          <form
+            action={formAction}
+            method="POST"
+            className="grid gap-4"
+            onSubmit={() => setOpen(false)}
+          >
+            <input type="hidden" name="_captcha" value="false" />
+            <input
+              type="hidden"
+              name="_subject"
+              value="Nuevo contacto VR Inmobiliaria"
+            />
+            <input
+              type="hidden"
+              name="_next"
+              value="https://www.vreyes.cl/gracias"
+            />
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Nombre y apellido
+              <input
+                type="text"
+                name="nombre"
+                required
+                placeholder="Tu nombre completo"
+                className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
+              />
+            </label>
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Correo electrónico
+              <input
+                type="email"
+                name="correo"
+                required
+                placeholder="nombre@correo.com"
+                className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
+              />
+            </label>
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Teléfono
+              <input
+                type="tel"
+                name="telefono"
+                required
+                placeholder="+56 9 1234 5678"
+                className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
+              />
+            </label>
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Mensaje
+              <textarea
+                name="mensaje"
+                rows={4}
+                required
+                placeholder="Cuéntanos qué tipo de propiedad buscas o en qué etapa estás."
+                className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
+              />
+            </label>
+            <label className="flex items-center gap-2 text-xs text-brand-mute">
+              <input
+                type="checkbox"
+                name="newsletter"
+                value="Si, quiero recibir novedades"
+                className="h-4 w-4 rounded border-brand-navy/20 text-brand-gold focus:ring-brand-gold"
+              />
+              Deseo recibir novedades sobre proyectos y beneficios.
+            </label>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-sm font-semibold text-white shadow-[0_22px_60px_rgba(212,175,55,0.28)] transition hover:shadow-[0_28px_70px_rgba(212,175,55,0.35)]"
+            >
+              Enviar formulario
+            </button>
+          </form>
+        </div>
+      </Modal>
+    </>
   );
 }
