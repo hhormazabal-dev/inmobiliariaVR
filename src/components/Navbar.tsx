@@ -29,14 +29,6 @@ function CornerLines({
   const verticalEnd = isTopRight ? length : size;
   const verticalX = isTopRight ? size - stroke / 2 : stroke / 2;
 
-  const shadowOffset = stroke + 2;
-  const shadowHorizontalY = isTopRight
-    ? horizontalY + shadowOffset
-    : horizontalY - shadowOffset;
-  const shadowVerticalX = isTopRight
-    ? verticalX - shadowOffset
-    : verticalX + shadowOffset;
-
   const positionClass = isTopRight ? "top-0 right-0" : "bottom-0 left-0";
 
   return (
@@ -57,8 +49,8 @@ function CornerLines({
           y2={horizontalY}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stopColor="rgba(212,175,55,0.9)" />
-          <stop offset="1" stopColor="rgba(212,175,55,0)" />
+          <stop offset="0" stopColor="rgba(237,201,103,0.9)" />
+          <stop offset="1" stopColor="rgba(237,201,103,0)" />
         </linearGradient>
         <linearGradient
           id={`${uid}-gold-v`}
@@ -68,30 +60,8 @@ function CornerLines({
           y2={verticalEnd}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stopColor="rgba(212,175,55,0.9)" />
-          <stop offset="1" stopColor="rgba(212,175,55,0)" />
-        </linearGradient>
-        <linearGradient
-          id={`${uid}-shadow-h`}
-          x1={horizontalStart}
-          y1={shadowHorizontalY}
-          x2={horizontalEnd}
-          y2={shadowHorizontalY}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0" stopColor="rgba(14,33,73,0.18)" />
-          <stop offset="1" stopColor="rgba(14,33,73,0)" />
-        </linearGradient>
-        <linearGradient
-          id={`${uid}-shadow-v`}
-          x1={shadowVerticalX}
-          y1={verticalStart}
-          x2={shadowVerticalX}
-          y2={verticalEnd}
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0" stopColor="rgba(14,33,73,0.18)" />
-          <stop offset="1" stopColor="rgba(14,33,73,0)" />
+          <stop offset="0" stopColor="rgba(237,201,103,0.9)" />
+          <stop offset="1" stopColor="rgba(237,201,103,0)" />
         </linearGradient>
       </defs>
 
@@ -115,31 +85,10 @@ function CornerLines({
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
       />
-      <line
-        x1={horizontalStart}
-        y1={shadowHorizontalY}
-        x2={horizontalEnd}
-        y2={shadowHorizontalY}
-        stroke={`url(#${uid}-shadow-h)`}
-        strokeWidth={Math.max(0.5, stroke - 0.5)}
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-      <line
-        x1={shadowVerticalX}
-        y1={verticalStart}
-        x2={shadowVerticalX}
-        y2={verticalEnd}
-        stroke={`url(#${uid}-shadow-v)`}
-        strokeWidth={Math.max(0.5, stroke - 0.5)}
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
     </svg>
   );
 }
 
-/* WhatsApp minimal */
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" {...props}>
@@ -155,7 +104,6 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-/* NAV */
 const NAV = [
   { href: "/proyectos", label: "Proyectos" },
   { href: "/nosotros", label: "Nosotros" },
@@ -186,13 +134,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`
-        relative z-40 overflow-hidden
-        bg-[linear-gradient(90deg,rgba(241,237,229,0.96)_0%,rgba(255,255,255,0.94)_100%)]
-        backdrop-blur-xl
-        ${elevated ? "shadow-[0_8px_28px_rgba(0,0,0,0.06)]" : "shadow-none"}
-        border-b border-[rgba(212,175,55,0.35)]
-      `}
+      className={`relative z-40 overflow-visible bg-[linear-gradient(90deg,rgba(241,237,229,0.96)_0%,rgba(255,255,255,0.94)_100%)] backdrop-blur-xl ${
+        elevated ? "shadow-[0_8px_28px_rgba(0,0,0,0.06)]" : "shadow-none"
+      } border-b border-[rgba(237,201,103,0.35)]`}
     >
       {/* Top bar */}
       <div className="hidden border-b border-white/60 bg-brand-sand/80 text-[13px] text-brand-mute md:block">
@@ -226,15 +170,14 @@ export default function Navbar() {
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         <CornerLines pos="bottom-left" />
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
-              V
-            </div>
-            <span className="select-none text-[18px] font-semibold tracking-tight text-brand-navy">
-              VR Inmobiliaria
-            </span>
+          <Link
+            href="/"
+            className="flex items-center text-[18px] font-semibold tracking-tight text-brand-navy"
+          >
+            VR Inmobiliaria
           </Link>
 
+          {/* Nav links */}
           <nav className="hidden items-center gap-2 md:flex">
             {NAV.map(({ href, label }) => (
               <Link
@@ -242,7 +185,7 @@ export default function Navbar() {
                 href={href}
                 className={`relative rounded-lg px-3 py-2 text-sm tracking-wide transition ${
                   isActive(href)
-                    ? "text-brand-navy after:absolute after:left-3 after:right-3 after:-bottom-[4px] after:h-[2px] after:bg-[rgba(212,175,55,0.95)]"
+                    ? "text-brand-navy after:absolute after:left-3 after:right-3 after:-bottom-[4px] after:h-[2px] after:bg-[rgba(237,201,103,0.95)]"
                     : "text-brand-mute hover:text-brand-navy"
                 }`}
               >
@@ -251,12 +194,13 @@ export default function Navbar() {
             ))}
           </nav>
 
+          {/* Buttons */}
           <div className="hidden items-center gap-2 md:flex">
             <a
               href={calLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(212,175,55,0.18)] transition hover:shadow-[0_18px_40px_rgba(212,175,55,0.25)]"
+              className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(237,201,103,0.18)] transition hover:shadow-[0_18px_40px_rgba(237,201,103,0.25)]"
             >
               Agendar asesoría
             </a>
@@ -268,19 +212,14 @@ export default function Navbar() {
             >
               <WhatsAppIcon className="h-4 w-4" /> WhatsApp
             </a>
-            <button
-              className="md:hidden"
-              aria-label="Abrir menú"
-              onClick={() => setOpen((v) => !v)}
-            />
           </div>
 
+          {/* Mobile menu button */}
           <button
             className="inline-flex items-center justify-center rounded-lg border border-brand-navy/15 bg-white/90 p-2 text-brand-navy md:hidden"
             onClick={() => setOpen((v) => !v)}
             aria-label="Abrir menú"
           >
-            <span className="sr-only">Abrir menú</span>
             <div className="h-4 w-5">
               <div className="mb-[5px] h-[2px] w-full bg-current" />
               <div className="mb-[5px] h-[2px] w-full bg-current" />
@@ -290,9 +229,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Panel mobile */}
+      {/* Mobile panel */}
       {open && (
-        <div className="border-t border-[rgba(212,175,55,0.25)] bg-[rgba(255,255,255,0.96)] md:hidden">
+        <div className="border-t border-[rgba(237,201,103,0.25)] bg-[rgba(255,255,255,0.96)] md:hidden">
           <nav className="mx-auto max-w-7xl px-6 py-4">
             <ul className="flex flex-col gap-1">
               {NAV.map(({ href, label }) => (
@@ -316,7 +255,7 @@ export default function Navbar() {
                 href={calLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-center text-sm font-semibold text-white shadow-[0_12px_30px_rgba(212,175,55,0.18)]"
+                className="flex-1 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-center text-sm font-semibold text-white shadow-[0_12px_30px_rgba(237,201,103,0.18)]"
               >
                 Agendar asesoría
               </a>
@@ -333,6 +272,11 @@ export default function Navbar() {
           </nav>
         </div>
       )}
+
+      <span className="pointer-events-none absolute bottom-0 left-1/2 h-[4px] w-[125%] -translate-x-1/2 overflow-hidden">
+        <span className="absolute inset-0 rounded-full blur-md opacity-80 bg-[linear-gradient(90deg,rgba(168,120,24,0.6)_0%,rgba(237,201,103,0.5)_35%,rgba(255,243,208,0.32)_55%,rgba(237,201,103,0.5)_75%,rgba(168,120,24,0.6)_100%)]" />
+        <span className="absolute inset-0 rounded-full bg-[linear-gradient(90deg,#a67618_0%,#d7b045_20%,#ffeebc_50%,#d7b045_80%,#a67618_100%)] [background-size:260%_100%] animate-goldenPulse" />
+      </span>
     </header>
   );
 }

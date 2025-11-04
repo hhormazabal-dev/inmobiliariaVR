@@ -1,92 +1,167 @@
-"use client";
+import { cache } from "react";
+import { createClient } from "@supabase/supabase-js";
+import SafeImage from "@/components/SafeImage";
+import { toPublicStorageUrl } from "@/lib/supabaseImages";
+import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
 
-import Link from "next/link";
-import Image from "next/image";
+import RegionExplorer, {
+  type RegionCardData,
+  type RegionCommuneData,
+} from "@/components/RegionExplorer";
+import {
+  buildCommuneMeta,
+  getRegionMeta,
+  prettifyName,
+  resolveRegion,
+} from "@/lib/territoryMeta";
 
-type Item = {
-  nombre: string;
-  slug: string;
-  proyectos?: number;
-  imagen: string;
-  highlight: string;
-  detalle: string;
+type CommuneCount = {
+  name: string;
+  count: number;
 };
 
-const COMUNAS: Item[] = [
-  {
-    nombre: "Santiago Centro",
-    slug: "Santiago%20Centro",
-    proyectos: 18,
-    imagen: "https://images.unsplash.com/photo-1494783367193-149034c05e8f?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Corazón cultural y corporativo",
-    detalle: "Departamentos compactos, full conectividad y alta demanda de arriendo.",
-  },
-  {
-    nombre: "Ñuñoa",
-    slug: "%C3%91u%C3%B1oa",
-    proyectos: 12,
-    imagen: "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Barrio creativo + vida de barrio",
-    detalle: "Plazas, cafés y ciclo rutas con valorización sostenida los últimos años.",
-  },
-  {
-    nombre: "Providencia",
-    slug: "Providencia",
-    proyectos: 9,
-    imagen: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Eje premium y servicios",
-    detalle: "Un mix de oficinas, retail y residencias con ticket alto y liquidez.",
-  },
-  {
-    nombre: "La Florida",
-    slug: "La%20Florida",
-    proyectos: 7,
-    imagen: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Crecimiento al suroriente",
-    detalle: "Proyectos familiares cerca de estaciones de metro y polos comerciales.",
-  },
-  {
-    nombre: "San Miguel",
-    slug: "San%20Miguel",
-    proyectos: 6,
-    imagen: "https://images.unsplash.com/photo-1502005097973-6a7082348e28?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Mix residencial & conectividad",
-    detalle: "Unidades de inversión con buena plusvalía y acceso directo a Línea 2.",
-  },
-  {
-    nombre: "Independencia",
-    slug: "Independencia",
-    proyectos: 5,
-    imagen: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1400&auto=format&fit=crop",
-    highlight: "Renovación urbana",
-    detalle: "Departamentos nuevos, cercanías universitarias y ticket accesible.",
-  },
+const DEFAULT_COMMUNES: CommuneCount[] = [
+  { name: "Santiago Centro", count: 18 },
+  { name: "Ñuñoa", count: 12 },
+  { name: "Providencia", count: 9 },
+  { name: "La Florida", count: 7 },
+  { name: "San Miguel", count: 6 },
+  { name: "Independencia", count: 5 },
 ];
 
-function PinIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" {...props}>
-      <path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z" fill="currentColor"/>
-      <circle cx="12" cy="10" r="2.5" fill="#fff"/>
-    </svg>
+const HERO_IMAGE =
+  toPublicStorageUrl("nunoa/own/VISTA-GENERAL-own--scaled.jpg") ??
+  FALLBACK_IMAGE_DATA;
+
+const getCommunes = cache(async (): Promise<CommuneCount[]> => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    return [];
+  }
+
+  try {
+    const client = createClient(url, key, {
+      auth: { persistSession: false },
+    });
+
+    const { data, error } = await client
+      .from("projects")
+      .select("comuna,status");
+
+    if (error) {
+      console.error("[BrowseByComuna] Error consultando proyectos:", error);
+      return [];
+    }
+
+    const counts = new Map<string, number>();
+
+    for (const row of data ?? []) {
+      const comuna = row.comuna?.trim();
+      if (!comuna) continue;
+
+      const status = row.status?.toLowerCase();
+      if (
+        status &&
+        (status.includes("cerrado") ||
+          status.includes("no disponible") ||
+          status.includes("finalizado"))
+      ) {
+        continue;
+      }
+
+      counts.set(comuna, (counts.get(comuna) ?? 0) + 1);
+    }
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => {
+        if (b.count !== a.count) return b.count - a.count;
+        return a.name.localeCompare(b.name, "es");
+      });
+  } catch (error) {
+    console.error("[BrowseByComuna] Error inesperado:", error);
+    return [];
+  }
+});
+
+function buildRegionGroups(communes: CommuneCount[]): RegionCardData[] {
+  const buckets = new Map<
+    string,
+    { total: number; communes: CommuneCount[] }
+  >();
+
+  communes.forEach((entry) => {
+    const region = resolveRegion(entry.name);
+    if (!buckets.has(region)) {
+      buckets.set(region, { total: 0, communes: [] });
+    }
+    const bucket = buckets.get(region)!;
+    bucket.total += entry.count;
+    bucket.communes.push(entry);
+  });
+
+  const groups: RegionCardData[] = Array.from(buckets.entries()).map(
+    ([regionName, value], regionIndex) => {
+      const meta = getRegionMeta(regionName, regionIndex);
+      const communesDetail: RegionCommuneData[] = value.communes
+        .sort((a, b) => b.count - a.count)
+        .map((commune, index) => {
+          const metaCommune = buildCommuneMeta(commune.name, index);
+          const displayName =
+            metaCommune.displayName ?? prettifyName(commune.name);
+          return {
+            id: `${regionName}-${commune.name}`,
+            name: commune.name,
+            displayName,
+            count: commune.count,
+            highlight: metaCommune.highlight,
+            detail: metaCommune.detail,
+            slug: encodeURIComponent(commune.name),
+          };
+        });
+
+      return {
+        id: regionName,
+        name: regionName,
+        highlight: meta.highlight,
+        detail: meta.detail,
+        image: meta.image,
+        totalProjects: value.total,
+        communes: communesDetail,
+      };
+    },
   );
+
+  return groups.sort((a, b) => b.totalProjects - a.totalProjects);
 }
 
-export default function BrowseByComuna() {
+export default async function BrowseByComuna() {
+  const data = await getCommunes();
+  const communes = data.length > 0 ? data : DEFAULT_COMMUNES;
+  const regions = buildRegionGroups(communes);
+
+  if (regions.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative mx-auto mt-10 max-w-7xl overflow-hidden rounded-[40px] border border-white/60 px-6 py-16 shadow-[0_28px_80px_rgba(14,33,73,0.12)]">
       <div className="absolute inset-0">
-        <Image
-          src="https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=2200&auto=format&fit=crop"
-          alt="Santiago skyline at dusk"
+        <SafeImage
+          src={HERO_IMAGE}
+          alt="Paisaje urbano"
           fill
           className="object-cover"
           sizes="100vw"
+          priority
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/88 to-[#f3f6fb]/92" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/88 to-[#f3f6fb]/92" />
       </div>
       <span className="pointer-events-none absolute -left-20 top-10 h-64 w-64 rounded-full bg-brand-gold/20 blur-[140px]" />
       <span className="pointer-events-none absolute -right-24 bottom-10 h-60 w-60 rounded-full bg-brand-navy/20 blur-[130px]" />
+
       <header className="relative mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
           Comunas en foco
@@ -96,7 +171,9 @@ export default function BrowseByComuna() {
             Vive donde crece tu estilo de vida.
           </h2>
           <p className="mt-3 text-sm text-brand-mute md:text-base">
-            Zona norte, oriente o sur: curamos las comunas con mejor conectividad, rentabilidad y experiencias diarias.
+            Explora las regiones con mejores indicadores de conectividad,
+            rentabilidad y experiencia diaria. Selecciona una región para ver
+            sus comunas destacadas y los proyectos disponibles.
           </p>
         </div>
         <div className="inline-flex items-center gap-3 rounded-full border border-brand-navy/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-navy/70">
@@ -104,48 +181,8 @@ export default function BrowseByComuna() {
         </div>
       </header>
 
-      <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {COMUNAS.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/proyectos?comuna=${c.slug}`}
-            className="group relative overflow-hidden rounded-[30px] border border-white/20 bg-white/20 shadow-[0_24px_70px_rgba(14,33,73,0.14)] backdrop-blur-lg transition hover:-translate-y-1.5 hover:border-brand-gold/30 hover:shadow-[0_32px_90px_rgba(14,33,73,0.18)] focus:outline-none focus:ring-4 focus:ring-brand-gold/40"
-          >
-            <Image
-              src={c.imagen}
-              alt={c.nombre}
-              fill
-              className="object-cover brightness-[0.7] transition duration-700 group-hover:scale-105 group-hover:brightness-[0.9]"
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0e2149]/70 via-[#0f274f]/55 to-[#111827]/30" />
-            <div className="relative flex h-full flex-col justify-between p-6">
-              <div className="flex items-center gap-4 text-white/90">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white">
-                  <PinIcon className="h-4 w-4" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{c.nombre}</h3>
-                  <p className="text-xs text-white/70">
-                    {typeof c.proyectos === "number"
-                      ? `${c.proyectos} proyecto${c.proyectos === 1 ? "" : "s"}`
-                      : "Proyectos disponibles"}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">
-                  {c.highlight}
-                </p>
-                <p className="text-sm text-white/85">{c.detalle}</p>
-              </div>
-              <div className="flex items-center justify-between text-sm font-semibold text-white">
-                <span>Ver vitrina</span>
-                <span className="h-[2px] w-9 origin-left rounded bg-brand-gold transition-transform group-hover:scale-x-150" />
-              </div>
-            </div>
-          </Link>
-        ))}
+      <div className="relative">
+        <RegionExplorer regions={regions} />
       </div>
     </section>
   );

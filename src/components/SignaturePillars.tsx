@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/SafeImage";
 
 const MOMENTS = [
   {
@@ -95,7 +95,7 @@ export default function SignaturePillars() {
             aria-label={`Ver más sobre ${title}`}
           >
             <div className="relative h-56 w-full overflow-hidden">
-              <Image
+              <SafeImage
                 src={image}
                 alt={title}
                 fill
@@ -139,7 +139,7 @@ export default function SignaturePillars() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative h-48 w-full overflow-hidden rounded-3xl">
-              <Image
+              <SafeImage
                 src={openMoment.image}
                 alt={openMoment.title}
                 fill

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 
@@ -57,8 +58,8 @@ function CornerLines({
           y2={horizontalY}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stopColor="rgba(212,175,55,0.88)" />
-          <stop offset="1" stopColor="rgba(212,175,55,0)" />
+          <stop offset="0" stopColor="rgba(237,201,103,0.88)" />
+          <stop offset="1" stopColor="rgba(237,201,103,0)" />
         </linearGradient>
         <linearGradient
           id={`${uid}-gold-v`}
@@ -68,8 +69,8 @@ function CornerLines({
           y2={verticalEnd}
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stopColor="rgba(212,175,55,0.88)" />
-          <stop offset="1" stopColor="rgba(212,175,55,0)" />
+          <stop offset="0" stopColor="rgba(237,201,103,0.88)" />
+          <stop offset="1" stopColor="rgba(237,201,103,0)" />
         </linearGradient>
         <linearGradient
           id={`${uid}-shadow-h`}
@@ -178,13 +179,15 @@ export default function Footer() {
               <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
                 {/* Marca & propósito */}
                 <div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-navy font-black text-white">
-                      V
-                    </div>
-                    <span className="text-[18px] font-semibold text-brand-navy">
-                      VR Inmobiliaria
-                    </span>
+                  <div className="flex items-center">
+                    <Image
+                      src="/cuerpo.svg"
+                      alt="VR Inmobiliaria"
+                      width={120}
+                      height={40}
+                      className="h-10 w-auto"
+                      priority
+                    />
                   </div>
                   <p className="mt-4 text-[14px] leading-6 text-brand-mute">
                     Acompañamos tu decisión con información clara, asesoría
@@ -406,7 +409,7 @@ export default function Footer() {
             </label>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-sm font-semibold text-white shadow-[0_22px_60px_rgba(212,175,55,0.28)] transition hover:shadow-[0_28px_70px_rgba(212,175,55,0.35)]"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-sm font-semibold text-white shadow-[0_22px_60px_rgba(237,201,103,0.28)] transition hover:shadow-[0_28px_70px_rgba(237,201,103,0.35)]"
             >
               Enviar formulario
             </button>

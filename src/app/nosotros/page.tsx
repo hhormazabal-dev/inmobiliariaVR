@@ -40,7 +40,7 @@ export default function NosotrosPage() {
               href={calLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(212,175,55,0.22)] transition hover:shadow-[0_24px_60px_rgba(212,175,55,0.28)]"
+              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.22)] transition hover:shadow-[0_24px_60px_rgba(237,201,103,0.28)]"
             >
               Agendar asesoría
             </a>

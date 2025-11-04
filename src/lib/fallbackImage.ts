@@ -1,0 +1,2 @@
+export const FALLBACK_IMAGE_DATA =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='480' viewBox='0 0 640 480'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop stop-color='%23f5efe3' offset='0%25'/%3E%3Cstop stop-color='%23ede0c2' offset='100%25'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='640' height='480' fill='url(%23g)' rx='32'/%3E%3C/svg%3E";

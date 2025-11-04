@@ -1,11 +1,13 @@
 import HeroPortal from "@/components/HeroPortal";
-import ProjectCard from "@/components/ProjectCard";
+import FeaturedProjectCard from "@/components/FeaturedProjectCard";
 import BrowseByComuna from "@/components/BrowseByComuna";
 import TrustStrip from "@/components/TrustStrip";
 import SignaturePillars from "@/components/SignaturePillars";
 import TestimonialsShowcase from "@/components/TestimonialsShowcase";
 import ContactBanner from "@/components/ContactBanner";
 import type { Project } from "@/types/project";
+import { toPublicStorageUrl } from "@/lib/supabaseImages";
+import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
 
 const DESTACADOS: Project[] = [
   {
@@ -19,7 +21,8 @@ const DESTACADOS: Project[] = [
     arriendoGarantizado: true,
     creditoInterno: true,
     imagen:
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200&auto=format&fit=crop",
+      toPublicStorageUrl("santiago-centro/santos/portada.jpg") ??
+      FALLBACK_IMAGE_DATA,
     descripcion:
       "Revisión legal y financiera incluida. Entregamos comparativa de dividendos y escenarios de arriendo en menos de 48 horas.",
   },
@@ -31,8 +34,7 @@ const DESTACADOS: Project[] = [
     desdeUF: 2950,
     tipologias: ["Studio", "1D", "2D"],
     entrega: "inmediata",
-    imagen:
-      "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1200&auto=format&fit=crop",
+    imagen: toPublicStorageUrl("nunoa/own/portada.jpg") ?? FALLBACK_IMAGE_DATA,
     descripcion:
       "Ubicación estratégica a pasos de servicios y Metro, con terminaciones modernas y excelente proyección de arriendo.",
   },
@@ -45,7 +47,8 @@ const DESTACADOS: Project[] = [
     tipologias: ["2D", "3D"],
     entrega: "en_blanco",
     imagen:
-      "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop",
+      toPublicStorageUrl("coquimbo/cumbres-de-penuelas/portada.jpg") ??
+      FALLBACK_IMAGE_DATA,
     descripcion:
       "Acceso a financiamiento flexible y amenities premium en una de las comunas con mejor calidad de vida del país.",
   },
@@ -96,7 +99,7 @@ export default function HomePage() {
           </div>
           <a
             href="/proyectos"
-            className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(212,175,55,0.2)] transition hover:shadow-[0_22px_60px_rgba(212,175,55,0.28)]"
+            className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.2)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
           >
             Explorar proyectos
           </a>
@@ -104,7 +107,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {DESTACADOS.map((p) => (
-            <ProjectCard key={p.id} project={p} />
+            <FeaturedProjectCard key={p.id} project={p} />
           ))}
         </div>
       </section>
@@ -114,13 +117,19 @@ export default function HomePage() {
 
       {/* SECCIÓN: PROPÓSITO */}
       <section className="mx-auto max-w-7xl px-6 py-12">
-        <div className="rounded-[36px] border border-brand-navy/10 bg-white/85 px-6 py-12 text-center shadow-[0_24px_70px_rgba(14,33,73,0.08)] md:px-16">
-          <h2 className="font-display text-3xl font-semibold uppercase tracking-[0.08em] text-brand-navy md:text-4xl">
-            INVIERTE CON PROPÓSITO, VIVE CON ESTILO
-          </h2>
-          <p className="mt-4 text-base text-brand-mute">
-            Proyectos únicos, beneficios exclusivos.
-          </p>
+        <div className="relative overflow-hidden rounded-[48px] border border-brand-gold/25 bg-white/70 px-8 py-16 shadow-[0_36px_110px_rgba(14,33,73,0.14)] backdrop-blur-2xl md:px-20">
+          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[48px] bg-[radial-gradient(140%_140%_at_-10%_-15%,rgba(237,201,103,0.22)_0%,rgba(250,242,224,0.55)_45%,rgba(255,255,255,0)_75%),radial-gradient(120%_120%_at_110%_120%,rgba(209,174,76,0.18)_0%,rgba(255,255,255,0)_55%)]" />
+          <span className="pointer-events-none absolute inset-x-16 top-0 h-[3px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.95)_22%,rgba(255,242,210,1)_50%,rgba(237,201,103,0.95)_78%,rgba(168,120,24,0)_100%)] [background-size:220%_100%] animate-goldenPulse" />
+          <span className="pointer-events-none absolute -left-[18%] top-1/2 h-[160%] w-[55%] -translate-y-1/2 rotate-[12deg] rounded-full bg-[linear-gradient(120deg,rgba(255,245,225,0)_0%,rgba(255,250,235,0.75)_55%,rgba(255,250,235,0)_100%)] blur-3xl opacity-70" />
+          <span className="pointer-events-none absolute -right-[20%] top-0 h-[150%] w-[60%] rounded-full bg-[linear-gradient(130deg,rgba(185,137,29,0)_0%,rgba(237,201,103,0.36)_45%,rgba(185,137,29,0)_100%)] blur-3xl opacity-50" />
+          <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center">
+            <h3 className="font-display text-[34px] font-semibold uppercase tracking-[0.12em] text-brand-navy md:text-[42px]">
+              INVIERTE CON PROPÓSITO, VIVE CON ESTILO
+            </h3>
+            <p className="text-base font-medium tracking-[0.08em] text-brand-navy/65 md:text-lg">
+              Proyectos únicos, beneficios exclusivos.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -129,63 +138,61 @@ export default function HomePage() {
 
       {/* SECCIÓN: ESTADÍSTICAS */}
       <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="rounded-[36px] border border-brand-navy/10 bg-white/85 px-6 py-12 shadow-[0_24px_70px_rgba(14,33,73,0.08)] md:px-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
-            Confianza
-          </p>
-          <h3 className="mt-3 text-2xl font-semibold text-brand-navy md:text-3xl">
-            Cada número representa una historia de confianza:
-          </h3>
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            <div className="flex flex-col gap-3 rounded-3xl border border-white/60 bg-white/80 p-6 text-brand-navy shadow-[0_18px_50px_rgba(14,33,73,0.06)] backdrop-blur-xl">
-              <span className="text-4xl font-semibold text-brand-gold">
-                180+
-              </span>
+        <div className="relative overflow-hidden rounded-[44px] border border-brand-gold/25 bg-white/70 px-8 py-12 shadow-[0_34px_90px_rgba(14,33,73,0.08)] backdrop-blur-xl md:px-16">
+          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[44px] bg-[radial-gradient(120%_120%_at_0%_0%,rgba(237,201,103,0.18)_0%,rgba(255,245,228,0.42)_45%,rgba(242,232,206,0.4)_65%,rgba(247,245,238,0)_100%)]" />
+          <span className="pointer-events-none absolute inset-x-10 top-0 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.85)_20%,rgba(255,236,210,0.9)_50%,rgba(237,201,103,0.85)_80%,rgba(168,120,24,0)_100%)] animate-goldenPulse" />
+          <div className="relative grid gap-10 md:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] md:items-center">
+            <div className="space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.5em] text-brand-gold/80">
+                Confianza
+              </p>
+              <h3 className="text-2xl font-semibold text-brand-navy md:text-[32px] md:leading-[1.2]">
+                Cada número representa una historia de confianza auténtica.
+              </h3>
               <p className="text-sm text-brand-mute">
-                Familias e inversionistas que concretaron su proyecto con
-                nosotros.
+                Métricas que reflejan la experiencia de quienes nos eligen para
+                gestionar sus inversiones y nuevos hogares.
               </p>
             </div>
-            <div className="flex flex-col gap-3 rounded-3xl border border-white/60 bg-white/80 p-6 text-brand-navy shadow-[0_18px_50px_rgba(14,33,73,0.06)] backdrop-blur-xl">
-              <span className="text-4xl font-semibold text-brand-gold">
-                96%
-              </span>
-              <p className="text-sm text-brand-mute">
-                Recomiendan VR Inmobiliaria por nuestra atención personalizada.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 rounded-3xl border border-white/60 bg-white/80 p-6 text-brand-navy shadow-[0_18px_50px_rgba(14,33,73,0.06)] backdrop-blur-xl">
-              <span className="text-4xl font-semibold text-brand-gold">
-                24 hrs
-              </span>
-              <p className="text-sm text-brand-mute">
-                Promedio para recibir respuesta de un asesor.
-              </p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
+                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
+                <div className="relative space-y-3">
+                  <span className="block text-4xl font-semibold text-brand-navy md:text-[42px]">
+                    180+
+                  </span>
+                  <p className="text-sm text-brand-mute">
+                    Familias e inversionistas concretaron su proyecto con VR
+                    Inmobiliaria.
+                  </p>
+                </div>
+              </div>
+              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
+                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
+                <div className="relative space-y-3">
+                  <span className="block text-4xl font-semibold text-brand-navy md:text-[42px]">
+                    96%
+                  </span>
+                  <p className="text-sm text-brand-mute">
+                    Califican nuestra atención como excepcional por su cercanía
+                    y personalización.
+                  </p>
+                </div>
+              </div>
+              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
+                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
+                <div className="relative space-y-3">
+                  <span className="block text-4xl font-semibold text-brand-navy md:text-[42px]">
+                    24 hrs
+                  </span>
+                  <p className="text-sm text-brand-mute">
+                    Tiempo máximo para recibir respuesta de un asesor
+                    especializado.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* SECCIÓN: NOSOTROS */}
-      <section className="mx-auto max-w-7xl px-6 pb-20">
-        <div className="rounded-[36px] border border-brand-navy/10 bg-white/90 px-6 py-12 shadow-[0_24px_70px_rgba(14,33,73,0.08)] md:px-12 md:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
-            Nosotros
-          </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold text-brand-navy md:text-4xl">
-            MÁS QUE UNA INMOBILIARIA, SOMOS TU EQUIPO DE CONFIANZA
-          </h2>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-brand-mute">
-            En VR Inmobiliaria creemos que cada cliente merece una experiencia
-            transparente, cercana y personalizada. Nuestro compromiso es
-            acompañarte desde el primer contacto hasta la entrega de tu
-            departamento, guiándote con empatía, conocimiento y respaldo
-            financiero.
-          </p>
-          <p className="mt-6 text-base font-semibold text-brand-navy">
-            &quot;Cuando confías en quienes te acompañan, todo el proceso se
-            convierte en una experiencia más humana&quot;.
-          </p>
         </div>
       </section>
 

@@ -1,6 +1,17 @@
+import CitylineIllustration from "@/components/CitylineIllustration";
+
 export default function TrustStrip() {
   return (
-    <section className="border-y border-white/60 bg-white/85">
+    <section className="relative overflow-hidden border-y border-white/60 bg-white/85">
+      <CitylineIllustration
+        className="pointer-events-none absolute -right-10 top-6 hidden w-[220px] md:block"
+        orientation="right"
+      />
+      <CitylineIllustration
+        className="pointer-events-none absolute -bottom-16 left-8 hidden w-[260px] opacity-90 md:block"
+        variant="dense"
+        orientation="left"
+      />
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-12 md:flex-row md:items-center md:justify-between">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
@@ -15,7 +26,7 @@ export default function TrustStrip() {
             mutuarias para que tomes decisiones seguras y rentables.
           </p>
         </div>
-        <div className="flex flex-col gap-4 rounded-[28px] border border-brand-gold/30 bg-white/70 p-6 text-sm text-brand-navy shadow-[0_20px_50px_rgba(212,175,55,0.18)]">
+        <div className="flex flex-col gap-4 rounded-[28px] border border-brand-gold/30 bg-white/70 p-6 text-sm text-brand-navy shadow-[0_20px_50px_rgba(237,201,103,0.18)]">
           <div className="flex items-center gap-3">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-green/20 text-brand-green">
               ●

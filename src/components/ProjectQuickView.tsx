@@ -1,12 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import Modal from "@/components/ui/Modal";
 import { ufFmt } from "@/lib/uf";
 import type { Project } from "@/types/project";
 import { useEffect, useState } from "react";
 import { listProjectImages } from "@/lib/gallery";
+import SafeImage from "@/components/SafeImage";
+import { toPublicStorageUrl } from "@/lib/supabaseImages";
+import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -30,7 +32,8 @@ type Props = {
 };
 
 export default function ProjectQuickView({ open, onClose, project }: Props) {
-  const [images, setImages] = useState<string[]>(() => [project.imagen]);
+  const coverImage = toPublicStorageUrl(project.imagen) ?? FALLBACK_IMAGE_DATA;
+  const [images, setImages] = useState<string[]>(() => [coverImage]);
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -41,12 +44,18 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
         return;
       }
       setIdx(0);
-      const urls = await listProjectImages(project.titulo);
-      const unique = Array.from(
-        new Set([...(urls ?? []), project.imagen].filter(Boolean)),
+      const urls = await listProjectImages(
+        project.titulo,
+        project.imagen,
+        project.comuna,
       );
+      const normalized = (urls ?? [])
+        .map((url) => toPublicStorageUrl(url))
+        .filter((url): url is string => Boolean(url));
+      const cover = toPublicStorageUrl(project.imagen);
+      const unique = Array.from(new Set([...normalized, cover ?? coverImage]));
       if (active) {
-        setImages(unique.length > 0 ? unique : [project.imagen]);
+        setImages(unique.length > 0 ? unique : [coverImage]);
       }
     }
 
@@ -54,7 +63,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
     return () => {
       active = false;
     };
-  }, [open, project.titulo, project.imagen]);
+  }, [coverImage, open, project.comuna, project.imagen, project.titulo]);
 
   const next = () => setIdx((i) => (i + 1) % images.length);
   const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
@@ -80,7 +89,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Galería */}
         <div className="relative h-80 w-full overflow-hidden rounded-tr-2xl md:h-[28rem]">
-          <Image
+          <SafeImage
             src={images[idx]}
             alt={project.titulo}
             fill
@@ -160,7 +169,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
               href={calLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-medium text-white shadow-[0_16px_40px_rgba(212,175,55,0.22)] hover:shadow-[0_20px_50px_rgba(212,175,55,0.28)]"
+              className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-medium text-white shadow-[0_16px_40px_rgba(237,201,103,0.22)] hover:shadow-[0_20px_50px_rgba(237,201,103,0.28)]"
             >
               Agendar asesoría
             </a>
