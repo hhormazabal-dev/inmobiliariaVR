@@ -18,7 +18,7 @@ const sans = Manrope({
 export const metadata: Metadata = {
   title: "VR Inmobiliaria — Asesoría y Proyectos Seleccionados",
   description:
-    "Reinventamos la forma de invertir y elegir tu hogar con acompañamiento cercano, proyectos curados y respuesta ágil.",
+    "Reinventamos la forma de invertir y elegir tu hogar con acompañamiento cercano, proyectos seleccionados y respuesta ágil.",
 };
 
 export default function RootLayout({

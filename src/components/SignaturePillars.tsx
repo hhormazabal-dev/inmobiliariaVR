@@ -30,7 +30,7 @@ const MOMENTS = [
       'Recibes acompañamiento personalizado de principio a fin: te ayudamos a encontrar el proyecto perfecto, conseguir tu financiamiento y resolver cada duda con total claridad. "Tú eliges con libertad, nosotros te guiamos con experiencia".',
     image:
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop",
-    tag: "Selección curada",
+    tag: "Selección guiada",
     modal: {
       title: "Una vitrina que se siente tuya",
       description:
