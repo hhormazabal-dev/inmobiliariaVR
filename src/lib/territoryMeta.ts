@@ -18,49 +18,15 @@ const regionImage = (...candidates: string[]) => {
   return FALLBACK_IMAGE_DATA;
 };
 
-const SANTIAGO_IMAGE_PRIMARY = regionImage(
-  "santiago-centro/santos/portada.jpg",
-  "santiago-centro/neo-yungay/portada.jpg",
-  "/RM.jpeg",
-);
-const SANTIAGO_IMAGE_SECONDARY = regionImage(
-  "nunoa/own/portada.jpg",
-  "santiago-centro/argomedo/portada.jpg",
-  "/RM.jpeg",
-);
-const VALPARAISO_IMAGE = regionImage(
-  "vina-del-mar/vista-renaca/portada.jpg",
-  "concon/bosquemar/Captura de pantalla 2022-11-11 171118.png",
-  "/valpo.jpeg",
-);
-const COAST_IMAGE = regionImage(
-  "coquimbo/cumbres-de-penuelas/portada.jpg",
-  "la-serena/costa-pacifico-1/portada.jpg",
-  "/coquimbo.jpeg",
-);
-const LAKE_DISTRICT_IMAGE = regionImage(
-  "puerto-montt/vista-reloncavi/portada.jpg",
-  "puerto-montt/parque-germania/portada.jpg",
-  "/los-lagos.jpeg",
-);
-const ARAUCANIA_IMAGE = regionImage(
-  "temuco/aldunate/portada.jpg",
-  "temuco/ferroparque/portada.jpg",
-  "/araucania.png",
-);
-const DESERT_NORTH_IMAGE = regionImage(
-  "arica/neo-azapa/portada.jpg",
-  "/arica.jpeg",
-);
-const VINEYARD_IMAGE = regionImage(
-  "rancagua/caceres/portada.jpg",
-  "/ohiggins.jpg",
-);
-const PATAGONIA_IMAGE = regionImage(
-  "puerto-montt/vista-reloncavi/portada.jpg",
-  "puerto-varas/indigo/portada.jpg",
-  "/los-lagos.jpeg",
-);
+const SANTIAGO_IMAGE_PRIMARY = regionImage("/RM.jpeg");
+const SANTIAGO_IMAGE_SECONDARY = regionImage("/RM.jpeg");
+const VALPARAISO_IMAGE = regionImage("/valpo.jpeg");
+const COAST_IMAGE = regionImage("/coquimbo.jpeg");
+const LAKE_DISTRICT_IMAGE = regionImage("/los-lagos.jpeg");
+const ARAUCANIA_IMAGE = regionImage("/araucania.png");
+const DESERT_NORTH_IMAGE = regionImage("/arica.jpeg");
+const VINEYARD_IMAGE = regionImage("/ohiggins.jpg");
+const PATAGONIA_IMAGE = regionImage("/los-lagos.jpeg");
 
 type BaseMeta = {
   highlight: string;
