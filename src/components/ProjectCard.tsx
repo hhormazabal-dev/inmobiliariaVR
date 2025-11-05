@@ -310,7 +310,7 @@ export default function ProjectCard({ project }: Props) {
   const reserva = formatReserva(project.reserva);
 
   const benefitSentences = [
-    formatBenefitSentence("Bono pie", bonoPie),
+    formatBenefitSentence("Te apoyamos con el pie", bonoPie),
     formatBenefitSentence("Descuento", descuento),
     formatBenefitSentence("Crédito interno", creditoInterno),
     reserva ? `Reserva desde ${reserva}` : null,
@@ -390,7 +390,7 @@ export default function ProjectCard({ project }: Props) {
         label: "Tipologías",
         value: tipologiaInfo.raw,
       },
-    bonoPie && { label: "Bono pie", value: bonoPie },
+    bonoPie && { label: "Te apoyamos con el pie", value: bonoPie },
     descuento && { label: "Descuento", value: descuento },
     creditoInterno && { label: "Crédito interno", value: creditoInterno },
     reserva && { label: "Reserva", value: reserva },
