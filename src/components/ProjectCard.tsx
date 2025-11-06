@@ -128,6 +128,18 @@ function formatBenefitSentence(label: string, value: string | null) {
   return `${label} ${value}`;
 }
 
+function formatList(items: string[], conjunction = "y") {
+  const filtered = items.filter((item) => item && item.trim().length > 0);
+  if (filtered.length === 0) return "";
+  if (filtered.length === 1) return filtered[0]!;
+  if (filtered.length === 2) {
+    return `${filtered[0]} ${conjunction} ${filtered[1]}`;
+  }
+  const head = filtered.slice(0, -1).join(", ");
+  const tail = filtered[filtered.length - 1];
+  return `${head} ${conjunction} ${tail}`;
+}
+
 function buildRangeLabel(
   numbers: Set<number>,
   singular: string,
@@ -209,6 +221,61 @@ function parseTipologias(value: string | null | undefined): TipologiaInfo {
     extras: Array.from(extras),
     raw: cleanOriginal,
   };
+}
+
+type CardHighlightArgs = {
+  tipologias: TipologiaInfo;
+  bonoPie: string | null;
+  descuento: string | null;
+  creditoInterno: string | null;
+  reserva: string | null;
+  priceRange: string | null;
+};
+
+function buildCardHighlights({
+  tipologias,
+  bonoPie,
+  descuento,
+  creditoInterno,
+  reserva,
+  priceRange,
+}: CardHighlightArgs) {
+  const highlights: string[] = [];
+
+  const distributionParts: string[] = [];
+  if (tipologias.dormitorios) {
+    distributionParts.push(tipologias.dormitorios);
+  }
+  if (tipologias.banos) {
+    distributionParts.push(tipologias.banos);
+  }
+  if (tipologias.extras.length > 0) {
+    const extrasList = formatList(tipologias.extras);
+    distributionParts.push(`variantes ${extrasList.toLowerCase()}`);
+  } else if (!tipologias.dormitorios && !tipologias.banos && tipologias.raw) {
+    distributionParts.push(tipologias.raw);
+  }
+  if (distributionParts.length > 0) {
+    highlights.push(`Distribuciones: ${formatList(distributionParts)}.`);
+  }
+
+  const financingParts: string[] = [];
+  if (bonoPie) financingParts.push(`bono pie ${bonoPie.toLowerCase()}`);
+  if (creditoInterno) {
+    financingParts.push(`crédito interno ${creditoInterno.toLowerCase()}`);
+  }
+  if (descuento) financingParts.push(`descuento ${descuento.toLowerCase()}`);
+  if (reserva) financingParts.push(`reserva referencial ${reserva}`);
+
+  if (financingParts.length > 0) {
+    highlights.push(`Financiamiento: ${formatList(financingParts)}.`);
+  }
+
+  if (priceRange) {
+    highlights.push(`Valores referenciales ${priceRange}.`);
+  }
+
+  return highlights.slice(0, 3);
 }
 
 type Props = {
@@ -297,8 +364,22 @@ export default function ProjectCard({ project }: Props) {
     };
   }, [open, project.name, project.cover_url, project.comuna, initialGallery]);
 
-  const statusLabel =
-    project.status?.trim() || (project.uf_min ? "Disponible" : "Próximamente");
+  const rawStatus = project.status?.trim();
+  const normalizedStatus = rawStatus?.toLowerCase() ?? null;
+  const statusLabel = (() => {
+    if (normalizedStatus) {
+      if (normalizedStatus.includes("inmediata")) return "Entrega inmediata";
+      if (normalizedStatus.includes("dispon")) return "Entrega inmediata";
+      if (
+        normalizedStatus.includes("próxim") ||
+        normalizedStatus.includes("proxim")
+      ) {
+        return "Próximamente";
+      }
+      return rawStatus ?? "Entrega inmediata";
+    }
+    return project.uf_min ? "Entrega inmediata" : "Próximamente";
+  })();
   const priceRange =
     project.uf_min && project.uf_max && project.uf_max > project.uf_min
       ? `${formatUf(project.uf_min)} - ${formatUf(project.uf_max)}`
@@ -330,6 +411,17 @@ export default function ProjectCard({ project }: Props) {
       ? fallbackSummaryParts.join(" • ")
       : "Pronto agregaremos más información para este proyecto.");
   const modalSummary = description;
+  const hasPriceInfo =
+    (typeof project.uf_min === "number" && Number.isFinite(project.uf_min)) ||
+    (typeof project.uf_max === "number" && Number.isFinite(project.uf_max));
+  const cardHighlights = buildCardHighlights({
+    tipologias: tipologiaInfo,
+    bonoPie,
+    descuento,
+    creditoInterno,
+    reserva,
+    priceRange: hasPriceInfo ? priceRange : null,
+  });
   const totalGallery = galleryImages.length;
   const displayedGallery = galleryImages.slice(0, 6);
   const extraGallery = Math.max(totalGallery - displayedGallery.length, 0);
@@ -710,16 +802,19 @@ export default function ProjectCard({ project }: Props) {
             </p>
           </div>
           <p className="line-clamp-3 text-sm text-brand-mute/90">{summary}</p>
-          <div className="flex flex-wrap gap-2 text-xs text-brand-navy/80">
-            {infoBadges.slice(0, 4).map((detail) => (
-              <span
-                key={`${detail.label}-${detail.value}`}
-                className="inline-flex items-center gap-1 rounded-full bg-brand-sand/70 px-3 py-1 font-medium"
-              >
-                {detail.label}: {detail.value}
-              </span>
-            ))}
-          </div>
+          {cardHighlights.length > 0 && (
+            <div className="space-y-1 text-xs text-brand-navy/80">
+              {cardHighlights.map((highlight) => (
+                <p
+                  key={highlight}
+                  className="flex items-start gap-1 leading-snug"
+                >
+                  <span className="mt-0.5 text-brand-gold">•</span>
+                  <span>{highlight}</span>
+                </p>
+              ))}
+            </div>
+          )}
           <div className="mt-auto">
             <span className="text-xs uppercase tracking-[0.3em] text-brand-mute/60">
               Valor referencial
