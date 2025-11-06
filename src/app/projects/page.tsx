@@ -1,9 +1,7 @@
-import type { ReactElement } from "react";
-import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { getProjectExtras } from "@/lib/projectExtras";
 import ProjectCard from "@/components/ProjectCard";
-import { buildCommuneMeta, prettifyName } from "@/lib/territoryMeta";
+import { prettifyName } from "@/lib/territoryMeta";
 
 export const revalidate = 120;
 
@@ -70,12 +68,15 @@ function toNumber(value: ProjectRow["uf_min"]) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-async function fetchCatalog() {
+async function fetchCatalog(): Promise<{
+  comunas: string[];
+  projects: CatalogProject[];
+}> {
   const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
   const key = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
   if (!url || !key) {
-    return { comunas: [], grouped: new Map<string, CatalogProject[]>() };
+    return { comunas: [], projects: [] };
   }
 
   const supabase = createClient(url, key, {
@@ -107,7 +108,7 @@ async function fetchCatalog() {
     .order("comuna", { ascending: true })
     .order("updated_at", { ascending: false });
 
-  const grouped = new Map<string, CatalogProject[]>();
+  const projectsList: CatalogProject[] = [];
 
   for (const row of projectsData ?? []) {
     if (!row.id || !row.name || !row.comuna) continue;
@@ -156,13 +157,10 @@ async function fetchCatalog() {
         null,
     };
 
-    if (!grouped.has(comuna)) {
-      grouped.set(comuna, []);
-    }
-    grouped.get(comuna)!.push(project);
+    projectsList.push(project);
   }
 
-  return { comunas, grouped };
+  return { comunas, projects: projectsList };
 }
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -190,129 +188,95 @@ function parseUfQuery(raw?: string) {
 export default async function ProjectsPage({
   searchParams,
 }: ProjectsPageProps) {
-  const { comunas, grouped } = await fetchCatalog();
+  const { comunas, projects } = await fetchCatalog();
   const params = (await searchParams) ?? {};
   const selectedComuna = firstParam(params.comuna)?.trim();
   const ufMinFilter = parseUfQuery(firstParam(params.ufMin));
   const ufMaxFilter = parseUfQuery(firstParam(params.ufMax));
 
-  const filteredComunas =
-    selectedComuna && comunas.includes(selectedComuna)
-      ? comunas.filter((name) => name === selectedComuna)
-      : comunas;
+  const filteredProjects = projects.filter((project) => {
+    if (selectedComuna && project.comuna !== selectedComuna) {
+      return false;
+    }
 
-  let hasResults = false;
+    const projectMin = project.uf_min ?? project.uf_max;
+    const projectMax = project.uf_max ?? project.uf_min;
 
-  const sections = filteredComunas
-    .map((comuna, index) => {
-      const projects = grouped.get(comuna) ?? [];
-      const filteredProjects = projects.filter((project) => {
-        const projectMin = project.uf_min ?? project.uf_max;
-        const projectMax = project.uf_max ?? project.uf_min;
+    if (
+      ufMinFilter !== null &&
+      (projectMin === null || projectMin < ufMinFilter)
+    ) {
+      return false;
+    }
+    if (
+      ufMaxFilter !== null &&
+      (projectMax === null || projectMax > ufMaxFilter)
+    ) {
+      return false;
+    }
 
-        if (
-          ufMinFilter !== null &&
-          (projectMin === null || projectMin < ufMinFilter)
-        ) {
-          return false;
-        }
-        if (
-          ufMaxFilter !== null &&
-          (projectMax === null || projectMax > ufMaxFilter)
-        ) {
-          return false;
-        }
+    return true;
+  });
 
-        return true;
-      });
-
-      if (filteredProjects.length === 0) {
-        return null;
-      }
-
-      hasResults = true;
-      const meta = buildCommuneMeta(comuna, index);
-      const displayName = meta.displayName ?? prettifyName(comuna);
-
-      return (
-        <section
-          key={comuna}
-          className="relative overflow-hidden rounded-[44px] border border-white/45 bg-white/10 shadow-[0_32px_90px_rgba(14,33,73,0.16)] backdrop-blur-md"
-        >
-          <div className="absolute inset-0">
-            <Image
-              src={meta.image}
-              alt={displayName}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 75vw, 60vw"
-              priority={index === 0}
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0b1633]/82 via-[#10234c]/55 to-[#081427]/82" />
-          </div>
-          <div className="relative space-y-8 px-6 py-10 md:px-12 md:py-12">
-            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-3 text-white">
-                <span className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-white/70">
-                  Comuna
-                </span>
-                <div>
-                  <h2 className="text-3xl font-semibold tracking-tight md:text-[34px]">
-                    {displayName}
-                  </h2>
-                  <p className="mt-2 text-sm font-semibold uppercase tracking-[0.32em] text-white/65">
-                    {meta.highlight}
-                  </p>
-                </div>
-                <p className="max-w-xl text-sm text-white/85 md:text-base">
-                  {meta.detail}
-                </p>
-              </div>
-              <div className="self-start rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white/75">
-                {filteredProjects.length} proyecto
-                {filteredProjects.length !== 1 ? "s" : ""}
-              </div>
-            </div>
-            <div className="rounded-[34px] border border-white/25 bg-white/82 p-6 shadow-[0_26px_80px_rgba(14,33,73,0.12)] backdrop-blur-xl">
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    })
-    .filter((section): section is ReactElement => Boolean(section));
+  const hasResults = filteredProjects.length > 0;
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-16">
-      <header className="mb-16 space-y-4 text-center md:space-y-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.45em] text-brand-gold">
-          Catálogo
-        </p>
-        <h1 className="font-display text-3xl font-semibold text-brand-navy md:text-4xl">
-          Proyectos disponibles por comuna
-        </h1>
-        <p className="mx-auto max-w-2xl text-sm text-brand-mute md:text-base">
-          Explora los proyectos activos y descubre las oportunidades más
-          recientes en cada zona. Actualizamos esta información de forma
-          recurrente.
-        </p>
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <header className="mb-12 flex flex-col gap-6 text-center">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.45em] text-brand-gold">
+            Catálogo
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-semibold text-brand-navy md:text-4xl">
+            Departamentos disponibles
+          </h1>
+          <p className="mt-3 text-sm text-brand-mute md:text-base">
+            Recorre las opciones vigentes y encuentra tu próximo proyecto en
+            Santiago y regiones. Información actualizada en tiempo real.
+          </p>
+        </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          <a
+            href="/projects"
+            className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] ${
+              !selectedComuna
+                ? "bg-brand-navy text-white shadow-[0_12px_28px_rgba(14,33,73,0.18)]"
+                : "bg-white text-brand-navy shadow-[0_12px_28px_rgba(14,33,73,0.08)] hover:bg-brand-navy/5"
+            }`}
+          >
+            Todas
+          </a>
+          {comunas.map((comuna) => {
+            const isActive = selectedComuna === comuna;
+            return (
+              <a
+                key={comuna}
+                href={`/projects?comuna=${encodeURIComponent(comuna)}`}
+                className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] transition ${
+                  isActive
+                    ? "bg-brand-navy text-white shadow-[0_12px_28px_rgba(14,33,73,0.18)]"
+                    : "bg-white text-brand-navy shadow-[0_12px_28px_rgba(14,33,73,0.08)] hover:bg-brand-navy/5"
+                }`}
+              >
+                {prettifyName(comuna)}
+              </a>
+            );
+          })}
+        </div>
       </header>
 
-      <div className="space-y-16">
-        {hasResults ? (
-          sections
-        ) : (
-          <p className="rounded-3xl border border-brand-navy/10 bg-white/70 p-10 text-center text-brand-mute">
-            No encontramos proyectos que coincidan con los filtros
-            seleccionados. Ajusta la comuna o el rango de UF e inténtalo
-            nuevamente.
-          </p>
-        )}
-      </div>
+      {hasResults ? (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-3xl border border-brand-navy/10 bg-white p-10 text-center text-brand-mute">
+          No encontramos proyectos que coincidan con los filtros seleccionados.
+          Ajusta la comuna o el rango de UF e inténtalo nuevamente.
+        </p>
+      )}
     </div>
   );
 }

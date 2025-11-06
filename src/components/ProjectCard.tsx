@@ -113,18 +113,6 @@ function formatReserva(value: string | number | null | undefined) {
   return raw;
 }
 
-function formatList(items: string[], conjunction = "y") {
-  const filtered = items.filter((item) => item && item.trim().length > 0);
-  if (filtered.length === 0) return "";
-  if (filtered.length === 1) return filtered[0]!;
-  if (filtered.length === 2) {
-    return `${filtered[0]} ${conjunction} ${filtered[1]}`;
-  }
-  const head = filtered.slice(0, -1).join(", ");
-  const tail = filtered[filtered.length - 1];
-  return `${head} ${conjunction} ${tail}`;
-}
-
 function buildRangeLabel(
   numbers: Set<number>,
   singular: string,
@@ -206,66 +194,6 @@ function parseTipologias(value: string | null | undefined): TipologiaInfo {
     extras: Array.from(extras),
     raw: cleanOriginal,
   };
-}
-
-type CardHighlightArgs = {
-  tipologias: TipologiaInfo;
-  bonoPie: string | null;
-  descuento: string | null;
-  creditoInterno: string | null;
-  reserva: string | null;
-  priceText: string | null;
-};
-
-function buildCardHighlights({
-  tipologias,
-  bonoPie,
-  descuento,
-  creditoInterno,
-  reserva,
-  priceText,
-}: CardHighlightArgs) {
-  const highlights: string[] = [];
-
-  const distributionParts: string[] = [];
-  if (tipologias.dormitorios) {
-    distributionParts.push(tipologias.dormitorios);
-  }
-  if (tipologias.banos) {
-    distributionParts.push(tipologias.banos);
-  }
-  if (tipologias.extras.length > 0) {
-    const extrasList = formatList(tipologias.extras);
-    distributionParts.push(`variantes ${extrasList.toLowerCase()}`);
-  } else if (!tipologias.dormitorios && !tipologias.banos && tipologias.raw) {
-    distributionParts.push(tipologias.raw);
-  }
-  const distributionHighlight =
-    distributionParts.length > 0 ? formatList(distributionParts) : null;
-
-  const financingParts: string[] = [];
-  if (bonoPie) financingParts.push(`bono pie ${bonoPie.toLowerCase()}`);
-  if (creditoInterno) {
-    financingParts.push(`crédito interno ${creditoInterno.toLowerCase()}`);
-  }
-  if (descuento) financingParts.push(`descuento ${descuento.toLowerCase()}`);
-  if (reserva) financingParts.push(`reserva desde ${reserva}`);
-
-  const financingHighlight =
-    financingParts.length > 0 ? formatList(financingParts) : null;
-
-  if (priceText) {
-    highlights.push(`Desde ${priceText}.`);
-  }
-
-  if (distributionHighlight) {
-    highlights.push(distributionHighlight);
-  }
-  if (financingHighlight) {
-    highlights.push(financingHighlight);
-  }
-
-  return highlights.slice(0, 3);
 }
 
 type Props = {
@@ -391,14 +319,6 @@ export default function ProjectCard({ project }: Props) {
   const description = project.description?.trim();
   const summary = description ?? "Detalle disponible bajo solicitud.";
   const modalSummary = description;
-  const cardHighlights = buildCardHighlights({
-    tipologias: tipologiaInfo,
-    bonoPie,
-    descuento,
-    creditoInterno,
-    reserva,
-    priceText: priceDisplay,
-  });
   const totalGallery = galleryImages.length;
   const displayedGallery = galleryImages.slice(0, 6);
   const extraGallery = Math.max(totalGallery - displayedGallery.length, 0);
@@ -459,7 +379,7 @@ export default function ProjectCard({ project }: Props) {
         label: "Tipologías",
         value: tipologiaInfo.raw,
       },
-    bonoPie && { label: "Te apoyamos con el pie", value: bonoPie },
+    bonoPie && { label: "Te ayudamos con el pie", value: bonoPie },
     descuento && { label: "Descuento", value: descuento },
     creditoInterno && { label: "Crédito interno", value: creditoInterno },
     reserva && { label: "Reserva", value: reserva },
@@ -499,7 +419,7 @@ export default function ProjectCard({ project }: Props) {
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 768px"
                 />
-                <span className="absolute left-6 top-6 inline-flex items-center rounded-full border border-white/70 bg-white/90 px-3 py-1 text-xs font-medium uppercase tracking-[0.25em] text-brand-mute/80 shadow-sm">
+                <span className="absolute left-6 top-6 inline-flex items-center rounded-full border border-brand-gold/70 bg-brand-gold px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-md">
                   {statusLabel}
                 </span>
               </div>
@@ -764,7 +684,7 @@ export default function ProjectCard({ project }: Props) {
             className="object-cover transition duration-500 group-hover:scale-[1.05]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-white/70 bg-white/90 px-3 py-1 text-xs font-medium uppercase tracking-[0.25em] text-brand-mute/80 shadow-sm">
+          <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-brand-gold/70 bg-brand-gold px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-md">
             {statusLabel}
           </span>
         </div>
@@ -779,19 +699,6 @@ export default function ProjectCard({ project }: Props) {
             </p>
           </div>
           <p className="line-clamp-3 text-sm text-brand-mute/90">{summary}</p>
-          {cardHighlights.length > 0 && (
-            <div className="space-y-1 text-xs text-brand-navy/80">
-              {cardHighlights.map((highlight) => (
-                <p
-                  key={highlight}
-                  className="flex items-start gap-1 leading-snug"
-                >
-                  <span className="mt-0.5 text-brand-gold">•</span>
-                  <span>{highlight}</span>
-                </p>
-              ))}
-            </div>
-          )}
           <div className="mt-auto">
             <span className="text-xs uppercase tracking-[0.3em] text-brand-mute/60">
               Desde

@@ -1,19 +1,7 @@
+import Link from "next/link";
 import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
-import SafeImage from "@/components/SafeImage";
-import { toPublicStorageUrl } from "@/lib/supabaseImages";
-import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
-
-import RegionExplorer, {
-  type RegionCardData,
-  type RegionCommuneData,
-} from "@/components/RegionExplorer";
-import {
-  buildCommuneMeta,
-  getRegionMeta,
-  prettifyName,
-  resolveRegion,
-} from "@/lib/territoryMeta";
+import { buildCommuneMeta, prettifyName } from "@/lib/territoryMeta";
 
 type CommuneCount = {
   name: string;
@@ -28,10 +16,6 @@ const DEFAULT_COMMUNES: CommuneCount[] = [
   { name: "San Miguel", count: 6 },
   { name: "Independencia", count: 5 },
 ];
-
-const HERO_IMAGE =
-  toPublicStorageUrl("nunoa/own/VISTA-GENERAL-own--scaled.jpg") ??
-  FALLBACK_IMAGE_DATA;
 
 const getCommunes = cache(async (): Promise<CommuneCount[]> => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -86,103 +70,81 @@ const getCommunes = cache(async (): Promise<CommuneCount[]> => {
   }
 });
 
-function buildRegionGroups(communes: CommuneCount[]): RegionCardData[] {
-  const buckets = new Map<
-    string,
-    { total: number; communes: CommuneCount[] }
-  >();
-
-  communes.forEach((entry) => {
-    const region = resolveRegion(entry.name);
-    if (!buckets.has(region)) {
-      buckets.set(region, { total: 0, communes: [] });
-    }
-    const bucket = buckets.get(region)!;
-    bucket.total += entry.count;
-    bucket.communes.push(entry);
-  });
-
-  const groups: RegionCardData[] = Array.from(buckets.entries()).map(
-    ([regionName, value], regionIndex) => {
-      const meta = getRegionMeta(regionName, regionIndex);
-      const communesDetail: RegionCommuneData[] = value.communes
-        .sort((a, b) => b.count - a.count)
-        .map((commune, index) => {
-          const metaCommune = buildCommuneMeta(commune.name, index);
-          const displayName =
-            metaCommune.displayName ?? prettifyName(commune.name);
-          return {
-            id: `${regionName}-${commune.name}`,
-            name: commune.name,
-            displayName,
-            count: commune.count,
-            highlight: metaCommune.highlight,
-            detail: metaCommune.detail,
-            slug: encodeURIComponent(commune.name),
-          };
-        });
-
-      return {
-        id: regionName,
-        name: regionName,
-        highlight: meta.highlight,
-        detail: meta.detail,
-        image: meta.image,
-        totalProjects: value.total,
-        communes: communesDetail,
-      };
-    },
-  );
-
-  return groups.sort((a, b) => b.totalProjects - a.totalProjects);
-}
-
 export default async function BrowseByComuna() {
   const data = await getCommunes();
   const communes = data.length > 0 ? data : DEFAULT_COMMUNES;
-  const regions = buildRegionGroups(communes);
 
-  if (regions.length === 0) {
+  if (communes.length === 0) {
     return null;
   }
 
-  return (
-    <section className="relative mx-auto mt-10 max-w-7xl overflow-hidden rounded-[40px] border border-white/60 px-6 py-16 shadow-[0_28px_80px_rgba(14,33,73,0.12)]">
-      <div className="absolute inset-0">
-        <SafeImage
-          src={HERO_IMAGE}
-          alt="Paisaje urbano"
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/88 to-[#f3f6fb]/92" />
-      </div>
-      <span className="pointer-events-none absolute -left-20 top-10 h-64 w-64 rounded-full bg-brand-gold/20 blur-[140px]" />
-      <span className="pointer-events-none absolute -right-24 bottom-10 h-60 w-60 rounded-full bg-brand-navy/20 blur-[130px]" />
+  const topCommunes = communes.slice(0, 9);
 
-      <header className="relative mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
+  return (
+    <section className="relative mx-auto mt-16 max-w-6xl overflow-hidden rounded-[28px] px-6 py-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(237,201,103,0.16),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(14,33,73,0.14),transparent_60%)]" />
+      <header className="mb-10 space-y-3 text-center md:space-y-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-brand-gold">
           Comunas en foco
         </p>
-        <div className="max-w-3xl">
-          <h2 className="text-3xl font-semibold text-brand-navy md:text-4xl">
-            Vive donde crece tu estilo de vida.
-          </h2>
-          <p className="mt-3 text-sm text-brand-mute md:text-base">
-            Explora las regiones con mejores indicadores de conectividad,
-            rentabilidad y experiencia diaria. Selecciona una región para ver
-            sus comunas destacadas y los proyectos disponibles.
-          </p>
-        </div>
-        <div className="inline-flex items-center gap-3 rounded-full border border-brand-navy/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-navy/70">
-          Actualizado 2025
-        </div>
+        <h2 className="font-display text-[28px] font-semibold text-brand-navy md:text-[34px]">
+          Vive donde crece tu estilo de vida.
+        </h2>
+        <p className="mx-auto max-w-2xl text-sm text-brand-mute md:text-base">
+          Elige la comuna que te interesa y descubre los proyectos disponibles
+          hoy. Información actualizada con asesoría gratuita para acompañarte en
+          la decisión.
+        </p>
       </header>
 
-      <div className="relative">
-        <RegionExplorer regions={regions} />
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {topCommunes.map((commune, index) => {
+          const meta = buildCommuneMeta(commune.name, index);
+          const displayName = meta.displayName ?? prettifyName(commune.name);
+
+          return (
+            <article
+              key={commune.name}
+              className="group relative flex h-full flex-col gap-4 rounded-[18px] bg-white/95 p-6 text-left shadow-[0_18px_40px_rgba(12,24,52,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(12,24,52,0.12)]"
+            >
+              <span className="pointer-events-none absolute inset-0 rounded-[18px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:shadow-[0_0_0_1px_rgba(12,24,52,0.06)]" />
+              <div className="space-y-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-brand-navy/40">
+                  Comuna
+                </p>
+                <h3 className="text-[20px] font-semibold text-brand-navy">
+                  {displayName}
+                </h3>
+                <p className="text-xs uppercase tracking-[0.28em] text-brand-gold/85">
+                  {commune.count} proyecto{commune.count !== 1 ? "s" : ""}
+                </p>
+              </div>
+
+              {meta.highlight && (
+                <p className="mt-2 text-sm font-semibold text-brand-navy/75">
+                  {meta.highlight}
+                </p>
+              )}
+              {meta.detail && (
+                <p className="text-sm leading-relaxed text-brand-mute">
+                  {meta.detail}
+                </p>
+              )}
+
+              <div className="mt-auto flex items-center justify-between pt-5 text-sm font-semibold text-brand-navy">
+                <Link
+                  href={`/projects?comuna=${encodeURIComponent(commune.name)}`}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-brand-navy transition group-hover:text-brand-gold"
+                >
+                  Ver proyectos →
+                </Link>
+                <span className="text-xs font-medium uppercase tracking-[0.28em] text-brand-mute">
+                  {commune.count} proyectos
+                </span>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
