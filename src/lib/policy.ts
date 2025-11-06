@@ -2,7 +2,7 @@ const NO_DATA_REPLY =
   "No tengo ese dato en mis fuentes autorizadas. Puedo derivarte con un asesor ahora mismo por WhatsApp.";
 
 export const DISCLAIMER =
-  "Información referencial; verificar disponibilidad y condiciones con un asesor.";
+  "Información en base a fuentes oficiales; verificar disponibilidad y condiciones con un asesor.";
 
 export const POLICY_SOURCE =
   "Datos oficiales publicados en vreyes.cl y registros verificados en Supabase (projects, inventory, pricing, amenities).";
@@ -14,7 +14,7 @@ Reglas obligatorias:
 - Si falta información o la consulta no puede ser respondida exclusivamente con las fuentes entregadas, responde exactamente: "${NO_DATA_REPLY}"
 - Si el usuario solicita hablar con alguien, coordinar visitas o cotizaciones, responde solo con el mensaje anterior y detén la conversación.
 - Nunca inventes datos ni proyectes escenarios no respaldados por las fuentes.
-- No proporciones asesoría legal, financiera ni promesas de retorno; remite a un asesor humano cuando sea necesario.
+- No entregues orientación legal, financiera ni promesas de retorno; remite a un asesor humano cuando sea necesario.
 - Resume con precisión los atributos recibidos en el contexto (nombre del proyecto, comuna, dirección, rango de precios UF, dormitorios/tipologías, estado/comercialización y enlace).
 - Incluye siempre el texto final: "${DISCLAIMER}"
 

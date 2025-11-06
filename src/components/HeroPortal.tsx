@@ -196,7 +196,7 @@ export default function HeroPortal() {
               variants={lineVariants}
               className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.42em] text-white/80 backdrop-blur-sm"
             >
-              Asesoría inmobiliaria Personalizado
+              Asesoría inmobiliaria gratuita personalizada
             </motion.span>
             <motion.h1
               variants={lineVariants}

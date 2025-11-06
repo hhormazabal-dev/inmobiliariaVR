@@ -374,7 +374,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const secondaryImages = project.gallery.slice(1);
   const primaryRequiresUnoptimized = primaryImage.startsWith("data:");
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
-  const waText = `Hola, me interesa ${project.name} (${project.comuna}). ¿Podemos coordinar una asesoría?`;
+  const waText = `Hola, me interesa ${project.name} (${project.comuna}). ¿Podemos coordinar una asesoría gratuita?`;
   const waHref = waPhone
     ? `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`
     : null;
@@ -507,7 +507,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 rel="noopener noreferrer"
                 className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-2.5 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.22)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
               >
-                Agendar asesoría
+                Agendar asesoría gratuita
               </a>
 
               {waHref && (

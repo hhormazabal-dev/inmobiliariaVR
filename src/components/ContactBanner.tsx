@@ -4,7 +4,7 @@ import CitylineIllustration from "@/components/CitylineIllustration";
 export default function ContactBanner() {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
-    "Hola, quiero coordinar una asesoría con VR Inmobiliaria.",
+    "Hola, quiero coordinar una asesoría gratuita con VR Inmobiliaria.",
   )}`;
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
@@ -29,7 +29,7 @@ export default function ContactBanner() {
               Agenda ahora
             </p>
             <h2 className="font-display text-3xl font-semibold md:text-4xl">
-              Agendar asesoría
+              Agendar asesoría gratuita
             </h2>
             <p className="text-sm text-brand-mute md:text-base">
               Acompañamiento personalizado para tu próxima propiedad. Agenda o
@@ -44,7 +44,7 @@ export default function ContactBanner() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-white shadow-[0_20px_45px_rgba(237,201,103,0.22)] transition hover:shadow-[0_24px_60px_rgba(237,201,103,0.28)]"
             >
-              Agendar asesoría
+              Agendar asesoría gratuita
             </a>
             <a
               href={waHref}

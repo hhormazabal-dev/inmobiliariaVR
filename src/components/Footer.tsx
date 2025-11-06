@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
+import { useContactForm } from "@/hooks/useContactForm";
 
 type CornerLinesProps = {
   pos: "top-right" | "bottom-left";
@@ -158,77 +159,36 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function Footer() {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
-    "Hola, quiero información de proyectos y agendar una asesoría con VR Inmobiliaria.",
+    "Hola, quiero información de proyectos y agendar una asesoría gratuita con VR Inmobiliaria.",
   )}`;
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
-  const formAction =
-    process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION || "/api/contact";
-  const formRedirect =
-    process.env.NEXT_PUBLIC_CONTACT_FORM_SUCCESS_URL ||
-    "https://www.vreyes.cl/gracias";
   const [open, setOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const {
+    formAction,
+    formRedirect,
+    isSubmitting,
+    submitMessage,
+    submitError,
+    handleSubmit,
+    reset,
+  } = useContactForm();
 
   useEffect(() => {
     if (open) {
-      setSubmitError(null);
-      setSubmitMessage(null);
-      setIsSubmitting(false);
+      reset();
     }
-  }, [open]);
+  }, [open, reset]);
 
-  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (isSubmitting) return;
-
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    data.set("_next", formRedirect);
-
-    setIsSubmitting(true);
-    setSubmitMessage(null);
-    setSubmitError(null);
-
-    try {
-      const response = await fetch(formAction, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: data,
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        throw new Error(
-          payload?.message ??
-            "No fue posible enviar el formulario. Intenta nuevamente.",
-        );
-      }
-
-      setSubmitMessage(
-        "¡Gracias! Recibimos tus datos. Un asesor se pondrá en contacto contigo pronto.",
-      );
-      form.reset();
-      setTimeout(() => {
-        setOpen(false);
-        setSubmitMessage(null);
-      }, 2200);
-    } catch (error) {
-      console.error("[Footer] Error enviando formulario:", error);
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "No fue posible enviar el formulario. Intenta nuevamente en unos minutos.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  useEffect(() => {
+    if (!submitMessage) return;
+    const timeout = window.setTimeout(() => {
+      setOpen(false);
+      reset();
+    }, 2200);
+    return () => window.clearTimeout(timeout);
+  }, [reset, submitMessage]);
 
   return (
     <>
@@ -253,13 +213,13 @@ export default function Footer() {
                   </div>
                   <p className="mt-4 text-[14px] leading-6 text-brand-mute">
                     Acompañamos tu decisión con información clara, asesoría
-                    cercana y procesos simples de principio a fin.
+                    gratuita cercana y procesos simples de principio a fin.
                   </p>
 
                   {/* Confianza / sellos (placeholder de texto) */}
                   <div className="mt-4 flex flex-wrap gap-2">
                     <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
-                      Asesoría certificada
+                      Asesoría gratuita certificada
                     </span>
                     <span className="rounded-full border border-brand-navy/10 bg-white px-3 py-1 text-[11px] text-brand-mute">
                       Análisis financiero personalizado
@@ -359,7 +319,7 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-full border border-brand-navy/15 px-4 py-1.5 text-sm font-semibold text-brand-navy hover:bg-brand-navy/5"
                       >
-                        Agendar asesoría
+                        Agendar asesoría gratuita
                       </a>
                     </p>
                   </div>
@@ -396,7 +356,7 @@ export default function Footer() {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Coordinemos una asesoría"
+        title="Coordinemos una asesoría gratuita"
       >
         <div className="space-y-5 bg-white/90 p-6 text-brand-navy backdrop-blur-xl">
           <p className="text-sm text-brand-mute">
@@ -406,7 +366,7 @@ export default function Footer() {
           <form
             action={formAction}
             method="POST"
-            onSubmit={handleFormSubmit}
+            onSubmit={handleSubmit}
             className="grid gap-4"
           >
             <input type="hidden" name="_next" value={formRedirect} />

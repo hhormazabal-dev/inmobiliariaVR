@@ -17,7 +17,7 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "VR Inmobiliaria — Asesoría y Proyectos Seleccionados",
+  title: "VR Inmobiliaria — Asesoría gratuita y Proyectos Seleccionados",
   description:
     "Reinventamos la forma de invertir y elegir tu hogar con acompañamiento cercano, proyectos seleccionados y respuesta ágil.",
 };

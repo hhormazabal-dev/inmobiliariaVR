@@ -113,21 +113,6 @@ function formatReserva(value: string | number | null | undefined) {
   return raw;
 }
 
-function formatBenefitSentence(label: string, value: string | null) {
-  if (!value) return null;
-  const lower = value.toLowerCase();
-  if (lower === "disponible") {
-    return `${label} disponible`;
-  }
-  if (lower === "no disponible") {
-    return `${label} no disponible`;
-  }
-  if (lower === "consultar") {
-    return `${label}: consultar`;
-  }
-  return `${label} ${value}`;
-}
-
 function formatList(items: string[], conjunction = "y") {
   const filtered = items.filter((item) => item && item.trim().length > 0);
   if (filtered.length === 0) return "";
@@ -229,7 +214,7 @@ type CardHighlightArgs = {
   descuento: string | null;
   creditoInterno: string | null;
   reserva: string | null;
-  priceRange: string | null;
+  priceText: string | null;
 };
 
 function buildCardHighlights({
@@ -238,7 +223,7 @@ function buildCardHighlights({
   descuento,
   creditoInterno,
   reserva,
-  priceRange,
+  priceText,
 }: CardHighlightArgs) {
   const highlights: string[] = [];
 
@@ -255,9 +240,8 @@ function buildCardHighlights({
   } else if (!tipologias.dormitorios && !tipologias.banos && tipologias.raw) {
     distributionParts.push(tipologias.raw);
   }
-  if (distributionParts.length > 0) {
-    highlights.push(`Distribuciones: ${formatList(distributionParts)}.`);
-  }
+  const distributionHighlight =
+    distributionParts.length > 0 ? formatList(distributionParts) : null;
 
   const financingParts: string[] = [];
   if (bonoPie) financingParts.push(`bono pie ${bonoPie.toLowerCase()}`);
@@ -265,14 +249,20 @@ function buildCardHighlights({
     financingParts.push(`crédito interno ${creditoInterno.toLowerCase()}`);
   }
   if (descuento) financingParts.push(`descuento ${descuento.toLowerCase()}`);
-  if (reserva) financingParts.push(`reserva referencial ${reserva}`);
+  if (reserva) financingParts.push(`reserva desde ${reserva}`);
 
-  if (financingParts.length > 0) {
-    highlights.push(`Financiamiento: ${formatList(financingParts)}.`);
+  const financingHighlight =
+    financingParts.length > 0 ? formatList(financingParts) : null;
+
+  if (priceText) {
+    highlights.push(`Desde ${priceText}.`);
   }
 
-  if (priceRange) {
-    highlights.push(`Valores referenciales ${priceRange}.`);
+  if (distributionHighlight) {
+    highlights.push(distributionHighlight);
+  }
+  if (financingHighlight) {
+    highlights.push(financingHighlight);
   }
 
   return highlights.slice(0, 3);
@@ -384,43 +374,30 @@ export default function ProjectCard({ project }: Props) {
     project.uf_min && project.uf_max && project.uf_max > project.uf_min
       ? `${formatUf(project.uf_min)} - ${formatUf(project.uf_max)}`
       : formatUf(project.uf_min);
+  const priceFromValue =
+    typeof project.uf_min === "number" && Number.isFinite(project.uf_min)
+      ? project.uf_min
+      : typeof project.uf_max === "number" && Number.isFinite(project.uf_max)
+        ? project.uf_max
+        : null;
+  const priceDisplay = formatUf(priceFromValue) ?? priceRange ?? null;
+  const priceLabel = priceDisplay ?? "Consulta precio";
   const tipologiaInfo = parseTipologias(project.tipologias);
   const bonoPie = formatBenefit(project.bono_pie);
   const descuento = formatBenefit(project.descuento);
   const creditoInterno = formatBenefit(project.credito_interno);
   const reserva = formatReserva(project.reserva);
 
-  const benefitSentences = [
-    formatBenefitSentence("Te apoyamos con el pie", bonoPie),
-    formatBenefitSentence("Descuento", descuento),
-    formatBenefitSentence("Crédito interno", creditoInterno),
-    reserva ? `Reserva desde ${reserva}` : null,
-  ].filter((item): item is string => Boolean(item));
-
-  const fallbackSummaryParts = [
-    tipologiaInfo.dormitorios,
-    tipologiaInfo.banos,
-    ...tipologiaInfo.extras,
-    ...benefitSentences,
-  ].filter((item): item is string => Boolean(item));
-
   const description = project.description?.trim();
-  const summary =
-    description ||
-    (fallbackSummaryParts.length > 0
-      ? fallbackSummaryParts.join(" • ")
-      : "Pronto agregaremos más información para este proyecto.");
+  const summary = description ?? "Detalle disponible bajo solicitud.";
   const modalSummary = description;
-  const hasPriceInfo =
-    (typeof project.uf_min === "number" && Number.isFinite(project.uf_min)) ||
-    (typeof project.uf_max === "number" && Number.isFinite(project.uf_max));
   const cardHighlights = buildCardHighlights({
     tipologias: tipologiaInfo,
     bonoPie,
     descuento,
     creditoInterno,
     reserva,
-    priceRange: hasPriceInfo ? priceRange : null,
+    priceText: priceDisplay,
   });
   const totalGallery = galleryImages.length;
   const displayedGallery = galleryImages.slice(0, 6);
@@ -553,14 +530,14 @@ export default function ProjectCard({ project }: Props) {
                   )}
                   <div className="rounded-2xl border border-brand-navy/10 bg-brand-sand/50 p-5 text-sm text-brand-navy">
                     <span className="block text-xs uppercase tracking-[0.3em] text-brand-mute/70">
-                      Valor estimado
+                      Desde
                     </span>
                     <div className="mt-2 text-xl font-semibold text-brand-navy">
-                      {priceRange}
+                      {priceLabel}
                     </div>
                     <p className="mt-3 text-xs text-brand-mute/80">
-                      Valores referenciales en UF; solicita asesoría para
-                      confirmar stock y promociones vigentes.
+                      Solicita asesoría gratuita para confirmar stock y
+                      promociones vigentes.
                     </p>
                   </div>
                 </div>
@@ -817,10 +794,10 @@ export default function ProjectCard({ project }: Props) {
           )}
           <div className="mt-auto">
             <span className="text-xs uppercase tracking-[0.3em] text-brand-mute/60">
-              Valor referencial
+              Desde
             </span>
             <div className="text-lg font-semibold text-brand-navy">
-              {priceRange}
+              {priceLabel}
             </div>
           </div>
         </div>

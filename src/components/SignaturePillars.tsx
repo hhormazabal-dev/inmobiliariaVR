@@ -8,7 +8,7 @@ const MOMENTS = [
     // 1) Título/descr. reemplazados con el bloque de abajo
     title: "DISEÑAMOS CONTIGO EL CAMINO IDEAL PARA TU PRÓXIMA PROPIEDAD",
     description:
-      'Conversamos sobre tus metas, tiempos y presupuesto para presentarte opciones reales que se adapten a ti. "Tu inversión comienza con una asesoría transparente y cercana".',
+      'Conversamos sobre tus metas, tiempos y presupuesto para presentarte opciones reales que se adapten a ti. "Tu inversión comienza con una asesoría gratuita, transparente y cercana".',
     image:
       "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1600&auto=format&fit=crop",
     tag: "Plan personal",
@@ -78,9 +78,9 @@ export default function SignaturePillars() {
           CERCANÍA REAL, DECISIONES INTELIGENTES
         </h2>
         <p className="mt-3 text-sm text-brand-mute md:text-base">
-          En VR Inmobiliaria te acompañamos con asesoría humana, claridad y
-          respaldo en cada paso para que invertir o comprar tu hogar sea una
-          experiencia segura y satisfactoria.
+          En VR Inmobiliaria te acompañamos con asesoría gratuita, humana,
+          claridad y respaldo en cada paso para que invertir o comprar tu hogar
+          sea una experiencia segura y satisfactoria.
         </p>
       </header>
 

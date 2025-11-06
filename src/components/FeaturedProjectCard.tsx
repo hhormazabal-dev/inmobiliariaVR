@@ -49,7 +49,7 @@ export default function FeaturedProjectCard({ project }: Props) {
     resolveImageSrc(project.imagen) ?? fallbackImage ?? FALLBACK_IMAGE_DATA;
 
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
-  const waText = `Hola, me interesa ${project.titulo} (${project.comuna}) desde ${project.desdeUF} UF. ¿Podemos coordinar una asesoría?`;
+  const waText = `Hola, me interesa ${project.titulo} (${project.comuna}) desde ${project.desdeUF} UF. ¿Podemos coordinar una asesoría gratuita?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
   const calLink =
     process.env.NEXT_PUBLIC_CAL_LINK ||
@@ -142,7 +142,7 @@ export default function FeaturedProjectCard({ project }: Props) {
               rel="noopener noreferrer"
               className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-medium text-white shadow-[0_16px_40px_rgba(237,201,103,0.22)] transition hover:shadow-[0_20px_50px_rgba(237,201,103,0.28)]"
             >
-              Agendar asesoría
+              Agendar asesoría gratuita
             </a>
 
             <a

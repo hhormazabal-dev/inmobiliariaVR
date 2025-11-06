@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
 type CornerLinesProps = {
@@ -105,12 +105,15 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 const NAV = [
+  { href: "/", label: "Inicio" },
   { href: "/proyectos", label: "Proyectos" },
   { href: "/nosotros", label: "Nosotros" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
 
@@ -128,6 +131,14 @@ export default function Navbar() {
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
     "Hola, quiero hablar con un asesor de VR Inmobiliaria sobre proyectos disponibles.",
   )}`;
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back();
+    } else {
+      router.push("/");
+    }
+  };
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -192,6 +203,13 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={handleBack}
+              className="rounded-lg px-3 py-2 text-sm tracking-wide text-brand-mute transition hover:text-brand-navy hover:underline underline-offset-4"
+            >
+              Volver
+            </button>
           </nav>
 
           {/* Buttons */}
@@ -202,7 +220,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="rounded-full border border-brand-navy/10 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(237,201,103,0.18)] transition hover:shadow-[0_18px_40px_rgba(237,201,103,0.25)]"
             >
-              Agendar asesoría
+              Agendar asesoría gratuita
             </a>
             <a
               href={waHref}
@@ -249,6 +267,18 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleBack();
+                    setOpen(false);
+                  }}
+                  className="w-full rounded-lg px-3 py-2 text-left text-[15px] text-brand-mute hover:bg-[rgba(241,237,229,0.7)] hover:text-brand-navy"
+                >
+                  Volver
+                </button>
+              </li>
             </ul>
             <div className="mt-4 flex gap-2">
               <a
@@ -257,7 +287,7 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 className="flex-1 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-center text-sm font-semibold text-white shadow-[0_12px_30px_rgba(237,201,103,0.18)]"
               >
-                Agendar asesoría
+                Agendar asesoría gratuita
               </a>
               <a
                 href={waHref}
