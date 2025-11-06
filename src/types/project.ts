@@ -10,4 +10,5 @@ export type Project = {
   creditoInterno?: boolean;
   descripcion: string;
   imagen: string; // URL
+  imagenFallback?: string;
 };

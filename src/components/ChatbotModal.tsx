@@ -129,9 +129,6 @@ export default function ChatbotModal() {
                   proyectos según comuna, disponibilidad, rango de precios en UF
                   y tipologías disponibles.
                 </p>
-                <p className="mt-2 text-xs text-brand-mute">
-                  Respondo solo con información verificada de nuestras fuentes.
-                </p>
               </motion.div>
             )}
 

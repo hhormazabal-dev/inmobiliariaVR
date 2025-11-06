@@ -8,6 +8,7 @@ import type { Project } from "@/types/project";
 import ProjectQuickView from "@/components/ProjectQuickView";
 import { toPublicStorageUrl } from "@/lib/supabaseImages";
 import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
+import { motion } from "framer-motion";
 
 // Ícono WhatsApp (SVG propio)
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -27,9 +28,25 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 
 type Props = { project: Project };
 
+const resolveImageSrc = (value?: string | null) => {
+  if (!value) return null;
+  if (
+    typeof value === "string" &&
+    (value.startsWith("/") || value.startsWith("data:"))
+  ) {
+    return value;
+  }
+  return (
+    toPublicStorageUrl(value) ?? (typeof value === "string" ? value : null)
+  );
+};
+
 export default function FeaturedProjectCard({ project }: Props) {
   const [open, setOpen] = useState(false);
-  const coverImage = toPublicStorageUrl(project.imagen) ?? FALLBACK_IMAGE_DATA;
+  const fallbackImage =
+    resolveImageSrc(project.imagenFallback) ?? FALLBACK_IMAGE_DATA;
+  const coverImage =
+    resolveImageSrc(project.imagen) ?? fallbackImage ?? FALLBACK_IMAGE_DATA;
 
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}) desde ${project.desdeUF} UF. ¿Podemos coordinar una asesoría?`;
@@ -43,14 +60,21 @@ export default function FeaturedProjectCard({ project }: Props) {
 
   return (
     <>
-      <article className="group overflow-hidden rounded-3xl border border-white/70 bg-white/90 shadow-[0_24px_60px_rgba(14,33,73,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_32px_80px_rgba(14,33,73,0.12)]">
+      <motion.article
+        whileHover={{ y: -6 }}
+        whileTap={{ scale: 0.99 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="group relative overflow-hidden rounded-3xl border border-white/60 bg-white/90 shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
+      >
+        <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(237,201,103,0.18),rgba(255,255,255,0)),radial-gradient(circle_at_80%_20%,rgba(14,33,73,0.08),rgba(255,255,255,0))] opacity-0 transition group-hover:opacity-100" />
         {/* Imagen */}
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden">
           <SafeImage
             src={coverImage}
+            fallbackSrc={fallbackImage}
             alt={project.titulo}
             fill
-            className="object-cover transition group-hover:scale-[1.015]"
+            className="object-cover transition duration-500 group-hover:scale-[1.05]"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
           {/* Badges discretas */}
@@ -72,7 +96,7 @@ export default function FeaturedProjectCard({ project }: Props) {
         </div>
 
         {/* Contenido */}
-        <div className="flex flex-col gap-5 p-6">
+        <div className="relative flex flex-col gap-5 p-6">
           <header className="flex items-start justify-between gap-5">
             <div>
               <h3 className="text-lg font-semibold text-brand-navy">
@@ -133,7 +157,7 @@ export default function FeaturedProjectCard({ project }: Props) {
             </a>
           </footer>
         </div>
-      </article>
+      </motion.article>
 
       {/* Modal de vista rápida */}
       <ProjectQuickView
