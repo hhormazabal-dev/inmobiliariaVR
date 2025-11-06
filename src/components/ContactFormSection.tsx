@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useContactForm } from "@/hooks/useContactForm";
+import { useProjectComunas } from "@/hooks/useProjectComunas";
 
 export default function ContactFormSection() {
   const {
@@ -13,6 +14,7 @@ export default function ContactFormSection() {
     submitError,
     reset,
   } = useContactForm();
+  const { comunas, loading: loadingComunas } = useProjectComunas();
 
   useEffect(() => {
     if (!submitMessage) return;
@@ -85,6 +87,29 @@ export default function ContactFormSection() {
                 placeholder="nombre@correo.com"
                 className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
               />
+            </label>
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Comuna de interés
+              <select
+                name="comuna"
+                required={comunas.length > 0}
+                defaultValue=""
+                disabled={loadingComunas || comunas.length === 0}
+                className="mt-1 w-full appearance-none rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20 disabled:cursor-not-allowed disabled:bg-brand-sand/40 disabled:text-brand-mute"
+              >
+                <option value="" disabled>
+                  {loadingComunas
+                    ? "Cargando comunas…"
+                    : comunas.length === 0
+                      ? "Sin comunas disponibles"
+                      : "Selecciona una comuna"}
+                </option>
+                {comunas.map((comuna) => (
+                  <option key={comuna} value={comuna}>
+                    {comuna}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
               Teléfono

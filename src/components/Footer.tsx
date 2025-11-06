@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import { useContactForm } from "@/hooks/useContactForm";
+import { useProjectComunas } from "@/hooks/useProjectComunas";
 
 type CornerLinesProps = {
   pos: "top-right" | "bottom-left";
@@ -174,6 +175,7 @@ export default function Footer() {
     handleSubmit,
     reset,
   } = useContactForm();
+  const { comunas, loading: loadingComunas } = useProjectComunas();
 
   useEffect(() => {
     if (open) {
@@ -399,6 +401,29 @@ export default function Footer() {
                 placeholder="+56 9 1234 5678"
                 className="mt-1 w-full rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy placeholder:text-brand-mute/60 focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20"
               />
+            </label>
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
+              Comuna de interés
+              <select
+                name="comuna"
+                required={comunas.length > 0}
+                defaultValue=""
+                disabled={loadingComunas || comunas.length === 0}
+                className="mt-1 w-full appearance-none rounded-2xl border border-brand-navy/15 bg-white px-4 py-3 text-sm text-brand-navy focus:border-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-gold/20 disabled:cursor-not-allowed disabled:bg-brand-sand/40 disabled:text-brand-mute"
+              >
+                <option value="" disabled>
+                  {loadingComunas
+                    ? "Cargando comunas…"
+                    : comunas.length === 0
+                      ? "Sin comunas disponibles"
+                      : "Selecciona una comuna"}
+                </option>
+                {comunas.map((comuna) => (
+                  <option key={comuna} value={comuna}>
+                    {comuna}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
               Mensaje
