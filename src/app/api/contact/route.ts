@@ -81,7 +81,13 @@ export async function POST(req: NextRequest) {
 
     await sendContactEmail(payload);
 
-    if (nextUrl) {
+    const acceptsHtml =
+      req.headers
+        .get("accept")
+        ?.split(",")
+        .some((item) => item.includes("text/html")) ?? false;
+
+    if (nextUrl && acceptsHtml) {
       const redirectTarget = nextUrl.startsWith("http")
         ? nextUrl
         : new URL(nextUrl, req.url).toString();
@@ -89,7 +95,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(redirectTarget, { status: 303 });
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, nextUrl: nextUrl ?? null });
   } catch (error) {
     console.error("Error enviando correo de contacto:", error);
 

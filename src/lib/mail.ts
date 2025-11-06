@@ -19,6 +19,9 @@ type MailConfig = {
   bcc?: string;
   replyTo?: string;
   subject: string;
+  ackSubject: string;
+  ackBody: string;
+  whatsappUrl?: string;
 };
 
 let cachedTransporter: nodemailer.Transporter | null = null;
@@ -32,6 +35,13 @@ function resolveMailConfig(replyTo?: string): MailConfig {
   const to = process.env.MAIL_TO ?? user;
   const bcc = process.env.MAIL_BCC;
   const subject = process.env.MAIL_SUBJECT ?? "Nuevo contacto VR Inmobiliaria";
+  const ackSubject =
+    process.env.MAIL_AUTOREPLY_SUBJECT ??
+    "Gracias por contactarte con VR Inmobiliaria";
+  const ackBody =
+    process.env.MAIL_AUTOREPLY_BODY ??
+    "Hola {{nombre}},\n\nGracias por contactarte con VR Inmobiliaria. En las próximas horas un asesor del equipo se pondrá en contacto contigo.\n\nSi necesitas atención inmediata, puedes escribirnos a nuestro WhatsApp: {{whatsapp_url}}.\n\nSaludos,\nEquipo VR Inmobiliaria";
+  const whatsappUrl = process.env.NEXT_PUBLIC_WHATSAPP_URL;
 
   if (!host || !user || !pass || !from || !to) {
     throw new Error("Faltan variables de entorno requeridas para SMTP");
@@ -54,6 +64,9 @@ function resolveMailConfig(replyTo?: string): MailConfig {
       .join(","),
     replyTo,
     subject,
+    ackSubject,
+    ackBody,
+    whatsappUrl,
   };
 }
 
@@ -132,4 +145,56 @@ export async function sendContactEmail(payload: ContactPayload) {
     text: buildTextBody(payload),
     html: buildHtmlBody(payload),
   });
+
+  const confirmation = buildAcknowledgementMessage(payload, config);
+  if (confirmation) {
+    try {
+      await transporter.sendMail({
+        to: payload.correo,
+        from: config.from,
+        subject: confirmation.subject,
+        text: confirmation.text,
+        html: confirmation.html,
+      });
+    } catch (error) {
+      console.error(
+        "[mail] Error enviando correo de confirmación al usuario:",
+        error,
+      );
+    }
+  }
+}
+
+function renderTemplate(template: string, payload: ContactPayload) {
+  return template
+    .replace(/{{\s*nombre\s*}}/gi, payload.nombre)
+    .replace(/{{\s*correo\s*}}/gi, payload.correo)
+    .replace(/{{\s*telefono\s*}}/gi, payload.telefono ?? "")
+    .replace(/{{\s*mensaje\s*}}/gi, payload.mensaje);
+}
+
+function buildAcknowledgementMessage(
+  payload: ContactPayload,
+  config: MailConfig,
+) {
+  if (!payload.correo) {
+    return null;
+  }
+
+  const subject = renderTemplate(config.ackSubject, payload);
+  const text = renderTemplate(
+    config.ackBody.replace(/{{\s*whatsapp_url\s*}}/gi, "").trim(),
+    payload,
+  );
+  const whatsappHtml = config.whatsappUrl
+    ? `<a href="${escapeHtml(config.whatsappUrl)}" style="display:inline-block;padding:10px 20px;margin-top:12px;border-radius:9999px;background: linear-gradient(90deg, #0f2451, #d9a63a);color:#ffffff;text-decoration:none;font-weight:600;">Hablar por WhatsApp</a>`
+    : "";
+  const htmlBody = escapeHtml(text).replace(/\n/g, "<br/>");
+  const html = whatsappHtml ? `${htmlBody}<br/>${whatsappHtml}` : htmlBody;
+
+  return {
+    subject,
+    text,
+    html,
+  };
 }

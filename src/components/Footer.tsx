@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Modal from "@/components/ui/Modal";
 
 type CornerLinesProps = {
@@ -169,6 +169,66 @@ export default function Footer() {
     process.env.NEXT_PUBLIC_CONTACT_FORM_SUCCESS_URL ||
     "https://www.vreyes.cl/gracias";
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      setSubmitError(null);
+      setSubmitMessage(null);
+      setIsSubmitting(false);
+    }
+  }, [open]);
+
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    data.set("_next", formRedirect);
+
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch(formAction, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: data,
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        throw new Error(
+          payload?.message ??
+            "No fue posible enviar el formulario. Intenta nuevamente.",
+        );
+      }
+
+      setSubmitMessage(
+        "¡Gracias! Recibimos tus datos. Un asesor se pondrá en contacto contigo pronto.",
+      );
+      form.reset();
+      setTimeout(() => {
+        setOpen(false);
+        setSubmitMessage(null);
+      }, 2200);
+    } catch (error) {
+      console.error("[Footer] Error enviando formulario:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "No fue posible enviar el formulario. Intenta nuevamente en unos minutos.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -346,8 +406,8 @@ export default function Footer() {
           <form
             action={formAction}
             method="POST"
+            onSubmit={handleFormSubmit}
             className="grid gap-4"
-            onSubmit={() => setOpen(false)}
           >
             <input type="hidden" name="_next" value={formRedirect} />
             <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
@@ -401,10 +461,37 @@ export default function Footer() {
             </label>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-6 py-3 text-sm font-semibold text-white shadow-[0_22px_60px_rgba(237,201,103,0.28)] transition hover:shadow-[0_28px_70px_rgba(237,201,103,0.35)]"
+              disabled={isSubmitting}
+              className="relative inline-flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-brand-gold/40 bg-gradient-to-r from-[#fce7b5] via-[#f6cf72] to-brand-gold px-6 py-3 text-sm font-semibold text-brand-navy shadow-[0_18px_48px_rgba(237,201,103,0.35)] transition hover:-translate-y-[1px] hover:shadow-[0_24px_70px_rgba(237,201,103,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold/40 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Enviar formulario
+              <span className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.55),transparent_55%),radial-gradient(circle_at_80%_25%,rgba(255,255,255,0.45),transparent_60%)]" />
+              <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-brand-gold">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </span>
+              <span className="relative">
+                {isSubmitting ? "Enviando..." : "Enviar"}
+              </span>
             </button>
+            {submitMessage && (
+              <p className="rounded-2xl border border-brand-gold/30 bg-white/70 px-4 py-3 text-xs text-brand-navy">
+                {submitMessage}
+              </p>
+            )}
+            {submitError && (
+              <p className="text-xs font-medium text-red-600">{submitError}</p>
+            )}
           </form>
         </div>
       </Modal>
