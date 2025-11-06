@@ -164,8 +164,10 @@ export default function Footer() {
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
   const formAction =
-    process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION ||
-    "https://formsubmit.co/mtbollmann@vreyes.cl";
+    process.env.NEXT_PUBLIC_CONTACT_FORM_ACTION || "/api/contact";
+  const formRedirect =
+    process.env.NEXT_PUBLIC_CONTACT_FORM_SUCCESS_URL ||
+    "https://www.vreyes.cl/gracias";
   const [open, setOpen] = useState(false);
 
   return (
@@ -347,17 +349,7 @@ export default function Footer() {
             className="grid gap-4"
             onSubmit={() => setOpen(false)}
           >
-            <input type="hidden" name="_captcha" value="false" />
-            <input
-              type="hidden"
-              name="_subject"
-              value="Nuevo contacto VR Inmobiliaria"
-            />
-            <input
-              type="hidden"
-              name="_next"
-              value="https://www.vreyes.cl/gracias"
-            />
+            <input type="hidden" name="_next" value={formRedirect} />
             <label className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-mute">
               Nombre y apellido
               <input

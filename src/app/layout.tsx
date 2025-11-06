@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FloatingChatWidget from "@/components/FloatingChatWidget";
 
 const display = Playfair_Display({
   subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
         <Navbar />
         <main className="bg-transparent">{children}</main>
         <Footer />
+        <FloatingChatWidget />
       </body>
     </html>
   );
