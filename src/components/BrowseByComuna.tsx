@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
+import SafeImage from "@/components/SafeImage";
 import { buildCommuneMeta, prettifyName } from "@/lib/territoryMeta";
+import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
 
 type CommuneCount = {
   name: string;
@@ -83,7 +85,7 @@ export default async function BrowseByComuna() {
   return (
     <section className="relative mx-auto mt-16 max-w-6xl overflow-hidden rounded-[28px] px-6 py-12">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(237,201,103,0.16),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(14,33,73,0.14),transparent_60%)]" />
-      <header className="mb-10 space-y-3 text-center md:space-y-4">
+      <header className="relative mb-10 space-y-3 text-center md:space-y-4">
         <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-brand-gold">
           Comunas en foco
         </p>
@@ -97,41 +99,52 @@ export default async function BrowseByComuna() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {topCommunes.map((commune, index) => {
           const meta = buildCommuneMeta(commune.name, index);
           const displayName = meta.displayName ?? prettifyName(commune.name);
+          const image = meta.image || FALLBACK_IMAGE_DATA;
 
           return (
             <article
               key={commune.name}
-              className="group relative flex h-full flex-col gap-4 rounded-[18px] bg-white/95 p-6 text-left shadow-[0_18px_40px_rgba(12,24,52,0.05)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(12,24,52,0.12)]"
+              className="group relative flex h-full flex-col overflow-hidden rounded-[18px] bg-white text-left shadow-[0_18px_40px_rgba(12,24,52,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_26px_60px_rgba(12,24,52,0.16)]"
             >
-              <span className="pointer-events-none absolute inset-0 rounded-[18px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:shadow-[0_0_0_1px_rgba(12,24,52,0.06)]" />
-              <div className="space-y-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-brand-navy/40">
+              <div className="relative h-32 w-full overflow-hidden">
+                <SafeImage
+                  src={image}
+                  alt={displayName}
+                  fill
+                  className="object-cover transition duration-500 group-hover:scale-[1.05]"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-transparent" />
+                <p className="absolute left-4 top-3 text-[10px] font-semibold uppercase tracking-[0.32em] text-white/80">
                   Comuna
                 </p>
-                <h3 className="text-[20px] font-semibold text-brand-navy">
+                <h3 className="absolute left-4 bottom-3 text-[20px] font-semibold text-white drop-shadow">
                   {displayName}
                 </h3>
+              </div>
+
+              <div className="space-y-2 px-6 pt-4">
                 <p className="text-xs uppercase tracking-[0.28em] text-brand-gold/85">
                   {commune.count} proyecto{commune.count !== 1 ? "s" : ""}
                 </p>
               </div>
 
               {meta.highlight && (
-                <p className="mt-2 text-sm font-semibold text-brand-navy/75">
+                <p className="px-6 text-sm font-semibold text-brand-navy/75">
                   {meta.highlight}
                 </p>
               )}
               {meta.detail && (
-                <p className="text-sm leading-relaxed text-brand-mute">
+                <p className="px-6 text-sm leading-relaxed text-brand-mute">
                   {meta.detail}
                 </p>
               )}
 
-              <div className="mt-auto flex items-center justify-between pt-5 text-sm font-semibold text-brand-navy">
+              <div className="mt-auto flex items-center justify-between px-6 pb-6 pt-5 text-sm font-semibold text-brand-navy">
                 <Link
                   href={`/projects?comuna=${encodeURIComponent(commune.name)}`}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-brand-navy transition group-hover:text-brand-gold"
@@ -139,7 +152,7 @@ export default async function BrowseByComuna() {
                   Ver proyectos →
                 </Link>
                 <span className="text-xs font-medium uppercase tracking-[0.28em] text-brand-mute">
-                  {commune.count} proyectos
+                  {commune.count} proyecto{commune.count !== 1 ? "s" : ""}
                 </span>
               </div>
             </article>

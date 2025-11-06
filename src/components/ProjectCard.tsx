@@ -419,7 +419,7 @@ export default function ProjectCard({ project }: Props) {
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 768px"
                 />
-                <span className="absolute left-6 top-6 inline-flex items-center rounded-full border border-brand-gold/70 bg-brand-gold px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-md">
+                <span className="absolute left-6 top-6 inline-flex items-center rounded-full border border-brand-gold/60 bg-[linear-gradient(135deg,rgba(237,201,103,0.95)_0%,rgba(247,225,156,0.85)_50%,rgba(209,174,76,0.9)_100%)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-[0_8px_20px_rgba(209,174,76,0.35)]">
                   {statusLabel}
                 </span>
               </div>
@@ -684,7 +684,7 @@ export default function ProjectCard({ project }: Props) {
             className="object-cover transition duration-500 group-hover:scale-[1.05]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-          <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-brand-gold/70 bg-brand-gold px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-md">
+          <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-brand-gold/60 bg-[linear-gradient(135deg,rgba(237,201,103,0.95)_0%,rgba(247,225,156,0.85)_50%,rgba(209,174,76,0.9)_100%)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-brand-navy shadow-[0_8px_20px_rgba(209,174,76,0.35)]">
             {statusLabel}
           </span>
         </div>
