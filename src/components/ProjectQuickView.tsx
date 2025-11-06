@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Modal from "@/components/ui/Modal";
 import { ufFmt } from "@/lib/uf";
 import type { Project } from "@/types/project";
@@ -73,7 +72,8 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}). ¿Podemos coordinar una asesoría gratuita?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
-  const calLink =
+  const brochureLink =
+    process.env.NEXT_PUBLIC_BROCHURE_LINK ||
     process.env.NEXT_PUBLIC_CAL_LINK ||
     "https://cal.com/tu-org/visita-proyecto";
   const descripcion =
@@ -166,12 +166,12 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
 
           <div className="mt-auto flex flex-wrap items-center gap-2">
             <a
-              href={calLink}
+              href={brochureLink}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-medium text-white shadow-[0_16px_40px_rgba(237,201,103,0.22)] hover:shadow-[0_20px_50px_rgba(237,201,103,0.28)]"
             >
-              Agendar asesoría gratuita
+              Descargar brochure
             </a>
             <a
               href={waHref}
@@ -181,12 +181,6 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
             >
               <WhatsAppIcon className="h-4 w-4" /> WhatsApp
             </a>
-            <Link
-              href={`/proyectos/${project.slug}`}
-              className="ml-auto text-sm font-medium text-brand-navy hover:opacity-80"
-            >
-              Ver ficha completa →
-            </Link>
           </div>
         </div>
       </div>

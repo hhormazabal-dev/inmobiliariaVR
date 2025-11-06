@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import SafeImage from "@/components/SafeImage";
 import { ufFmt } from "@/lib/uf";
 import type { Project } from "@/types/project";
@@ -126,15 +125,8 @@ export default function FeaturedProjectCard({ project }: Props) {
               onClick={() => setOpen(true)}
               className="rounded-full border border-brand-navy/10 bg-white px-4 py-2 text-sm font-medium text-brand-navy transition hover:border-brand-navy/25 hover:bg-white/90"
             >
-              Vista rápida
+              Descargar brochure
             </button>
-
-            <Link
-              href={`/proyectos/${project.slug}`}
-              className="text-sm font-semibold text-brand-navy hover:opacity-80"
-            >
-              Ver ficha →
-            </Link>
 
             <a
               href={calLink}

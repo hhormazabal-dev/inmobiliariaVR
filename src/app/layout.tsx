@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Playfair_Display, Manrope } from "next/font/google";
+import { Playfair_Display, Montserrat } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingChatWidget from "@/components/FloatingChatWidget";
@@ -11,8 +11,9 @@ const display = Playfair_Display({
   variable: "--font-display",
 });
 
-const sans = Manrope({
+const sans = Montserrat({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
 });
 
