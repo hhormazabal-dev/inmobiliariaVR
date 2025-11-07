@@ -53,3 +53,90 @@ img {
   background-size: 220% 220%;
   animation: ctaGradientPulse 14s ease-in-out infinite;
 }
+
+@keyframes timelineFlow {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes timelinePulse {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+.timeline-glow {
+  background-image:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(255, 255, 255, 0.12),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(22, 78, 189, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(237, 201, 103, 0.18),
+      transparent 55%
+    );
+  filter: blur(80px);
+  animation: timelinePulse 14s ease-in-out infinite alternate;
+}
+
+.timeline-beam {
+  background-image: linear-gradient(
+    90deg,
+    rgba(237, 201, 103, 0),
+    rgba(237, 201, 103, 0.8),
+    rgba(237, 201, 103, 0)
+  );
+  background-size: 200% auto;
+  animation: timelineFlow 18s linear infinite;
+}
+
+@keyframes modalArrowPulse {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(6px) scale(1.05);
+    opacity: 1;
+  }
+}
+
+.modal-chevron {
+  animation: modalArrowPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes ribbonFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.timeline-ribbon {
+  background-image: linear-gradient(
+    120deg,
+    rgba(16, 36, 74, 0.08),
+    rgba(237, 201, 103, 0.18),
+    rgba(255, 255, 255, 0.2),
+    rgba(16, 36, 74, 0.08)
+  );
+  background-size: 300% 100%;
+  animation: ribbonFlow 16s linear infinite;
+}

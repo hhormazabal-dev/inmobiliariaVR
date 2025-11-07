@@ -49,8 +49,8 @@ export default function ContactBanner() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-between rounded-2xl bg-gradient-to-r from-[#0f1f44] via-[#1d3460] to-[#27406f] px-6 py-4 text-white shadow-[0_22px_60px_rgba(12,24,52,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(12,24,52,0.4)]"
           >
-            <span>Agendar videollamada</span>
-            <span className="text-xs uppercase tracking-[0.32em] text-white/70">
+            <span className="text-white">Agendar videollamada</span>
+            <span className="text-xs uppercase tracking-[0.32em] text-white">
               30 min
             </span>
           </a>
