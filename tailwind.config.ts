@@ -14,7 +14,7 @@ const config: Config = {
           sand: "#F7F7F7", // fondo cálido general
           paper: "#FFFFFF", // tarjetas
           line: "#E5E7EB", // bordes sutiles
-          gold: "#EDC967", // acento premium
+          gold: "#EDC967", // acento distintivo
           green: "#3CB371", // acento natural
           text: "#0F172A", // texto principal
           mute: "#64748B", // texto secundario

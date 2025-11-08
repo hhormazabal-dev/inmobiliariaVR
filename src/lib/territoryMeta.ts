@@ -54,7 +54,7 @@ export const COMMUNE_META: Record<string, CommuneMeta> = {
     image: SANTIAGO_IMAGE_SECONDARY,
   },
   Providencia: {
-    highlight: "EJE PREMIUM Y SERVICIOS",
+    highlight: "EJE DE ALTO VALOR Y SERVICIOS",
     detail:
       "Un mix de oficinas, retail y residencias con ticket alto y liquidez.",
     image: SANTIAGO_IMAGE_PRIMARY,
@@ -161,7 +161,7 @@ export const COMMUNE_META: Record<string, CommuneMeta> = {
     displayName: "Concón",
     highlight: "COSTA GOURMET",
     detail:
-      "Vista privilegiada al Pacífico, gastronomía y proyectos con amenities premium.",
+      "Vista privilegiada al Pacífico, gastronomía y proyectos con amenities de alto nivel.",
     image: VALPARAISO_IMAGE,
   },
   Papudo: {
@@ -171,7 +171,7 @@ export const COMMUNE_META: Record<string, CommuneMeta> = {
     image: COAST_IMAGE,
   },
   "Puerto Varas": {
-    highlight: "LAGO + TURISMO PREMIUM",
+    highlight: "LAGO + TURISMO DE ALTO NIVEL",
     detail:
       "Inversión que combina lifestyle, naturaleza y alta ocupación turística.",
     image: LAKE_DISTRICT_IMAGE,

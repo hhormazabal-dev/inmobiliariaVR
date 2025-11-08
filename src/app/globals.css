@@ -140,3 +140,228 @@ img {
   background-size: 300% 100%;
   animation: ribbonFlow 16s linear infinite;
 }
+
+@keyframes pillarFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pillar-fade {
+  opacity: 0;
+  transform: translateY(32px);
+  animation: pillarFadeUp 0.9s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar-fade {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes benefitReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.benefit-flow {
+  position: relative;
+  opacity: 0;
+  animation: benefitReveal 1s ease forwards;
+}
+
+.benefit-flow::before,
+.benefit-flow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  transition:
+    transform 0.6s ease,
+    opacity 0.6s ease;
+}
+
+.benefit-flow::before {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.65),
+    rgba(255, 255, 255, 0.08)
+  );
+  opacity: 0.4;
+}
+
+.benefit-flow::after {
+  top: 0.45rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff,
+    rgba(237, 201, 103, 0.1)
+  );
+  box-shadow: 0 0 18px rgba(237, 201, 103, 0.5);
+  opacity: 0.85;
+  transform: translateX(-4px);
+}
+
+.benefit-flow:hover::before,
+.benefit-flow:focus-visible::before {
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+
+.benefit-flow:hover::after,
+.benefit-flow:focus-visible::after {
+  opacity: 1;
+  transform: translateX(1px) scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .benefit-flow {
+    animation: none;
+    opacity: 1;
+  }
+
+  .benefit-flow::before,
+  .benefit-flow::after {
+    transition: none;
+  }
+}
+
+@keyframes goldenAmbient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes goldenBorderPulse {
+  0% {
+    opacity: 0.4;
+    transform: scaleX(0.98);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scaleX(0.98);
+  }
+}
+
+.golden-ambient {
+  background-image:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(255, 255, 245, 0.9),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(237, 201, 103, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 50% 80%,
+      rgba(255, 245, 225, 0.65),
+      transparent 65%
+    );
+  background-size: 180% 180%;
+  animation: goldenAmbient 18s ease-in-out infinite;
+}
+
+.golden-border {
+  animation: goldenBorderPulse 8s ease-in-out infinite;
+}
+
+@keyframes benefitRibbon {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+.benefits-atrium {
+  position: relative;
+  background:
+    radial-gradient(
+      circle at 5% 15%,
+      rgba(237, 201, 103, 0.18),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(255, 255, 255, 0.12),
+      transparent 50%
+    ),
+    linear-gradient(135deg, #02040a, #0a1328 55%, #101d38);
+}
+
+.benefits-atrium::before,
+.benefits-atrium::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.benefits-atrium::before {
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(237, 201, 103, 0.25),
+    transparent 55%
+  );
+  filter: blur(80px);
+  opacity: 0.6;
+  animation: goldenAmbient 28s ease-in-out infinite;
+}
+
+.benefits-atrium::after {
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0)),
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size:
+    400% 400%,
+    clamp(180px, 22vw, 260px) 100%,
+    100% clamp(120px, 12vw, 180px);
+  opacity: 0.35;
+  animation: benefitRibbon 22s linear infinite;
+}
+
+.benefits-grid {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .benefits-atrium::before,
+  .benefits-atrium::after {
+    animation: none;
+  }
+}

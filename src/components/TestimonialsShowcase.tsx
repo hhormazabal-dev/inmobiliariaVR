@@ -108,7 +108,7 @@ export default function TestimonialsShowcase() {
             Lo que dicen nuestros clientes
           </p>
           <h2 className="font-display text-3xl font-semibold leading-tight md:text-4xl">
-            Experiencias reales de acompañamiento premium.
+            Experiencias reales de acompañamiento experto.
           </h2>
           <p className="text-sm text-white/85 md:text-base">
             Historias de quienes confiaron en VR Inmobiliaria para elegir hogar

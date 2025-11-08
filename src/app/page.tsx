@@ -2,8 +2,6 @@ import Link from "next/link";
 import HeroPortal from "@/components/HeroPortal";
 import FeaturedProjectCard from "@/components/FeaturedProjectCard";
 import BrowseByComuna from "@/components/BrowseByComuna";
-import TrustStrip from "@/components/TrustStrip";
-import SignaturePillars from "@/components/SignaturePillars";
 import TestimonialsShowcase from "@/components/TestimonialsShowcase";
 import ContactBanner from "@/components/ContactBanner";
 import AnimatedCounter from "@/components/AnimatedCounter";
@@ -20,7 +18,7 @@ const INSIGHTS = [
     categoria: "Tendencia",
     titulo: "Cinco comunas que lideran el desarrollo urbano mixto",
     descripcion:
-      "Providencia, Ñuñoa y más zonas están atrayendo proyectos que mezclan vivienda, servicios y amenities premium.",
+      "Providencia, Ñuñoa y más zonas están atrayendo proyectos que mezclan vivienda, servicios y amenities de alto nivel.",
   },
   {
     categoria: "Checklist Legal",
@@ -32,6 +30,15 @@ const INSIGHTS = [
 
 export default async function HomePage() {
   const destacados = await fetchFeaturedProjects();
+  const benefits = [
+    "Apoyo al pie de hasta 15% (en proyectos seleccionados)",
+    "Crédito interno o Creditú de hasta 10%",
+    "Evaluación hipotecaria gratuita",
+    "Gestión integral y seguimiento de tu crédito",
+    "Asesoramiento personalizado y sin costo en nuestros proyectos",
+    "Arriendo garantizado por hasta 24 meses",
+    "VR Inmobiliaria — tu aliado para invertir con confianza.",
+  ];
 
   return (
     <>
@@ -39,59 +46,98 @@ export default async function HomePage() {
       <HeroPortal />
 
       {/* SECCIÓN: PROYECTOS DESTACADOS */}
-      <section className="mx-auto max-w-7xl px-6 pb-16 pt-12">
-        <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
-              Selección personalizado
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-semibold text-brand-navy md:text-4xl">
-              PROYECTOS SELECCIONADOS POR SU VALOR, DISEÑO Y PROYECCIÓN
-            </h2>
-            <p className="mt-3 text-sm text-brand-mute md:text-base">
-              Te presentamos opciones con excelente ubicación, financiamiento
-              flexible y respaldo profesional, para invertir o vivir con
-              tranquilidad.
-            </p>
+      <section className="pb-16 pt-12">
+        <div className="benefits-atrium relative w-full overflow-hidden py-16 text-white">
+          <div className="relative z-10 mx-auto flex max-w-[1400px] flex-col gap-12 px-6 sm:px-12 md:px-16 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-brand-gold/80">
+                Beneficios en VR Inmobiliaria
+              </p>
+              <h3 className="font-display text-[36px] font-semibold leading-tight text-white md:text-[46px]">
+                En VR Inmobiliaria te acompañamos con soluciones reales y
+                asesoría experta para que concretar tu inversión sea más fácil
+                que nunca.
+              </h3>
+              <p className="text-sm text-white/80 md:text-base">Ofrecemos:</p>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white/50">
+              <span>Programa integral</span>
+              <span className="hidden h-px flex-1 bg-white/25 sm:block" />
+              <span>{String(benefits.length).padStart(2, "0")} beneficios</span>
+            </div>
           </div>
-          <Link
-            href="/proyectos"
-            className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.2)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
-          >
-            Explorar proyectos
-          </Link>
-        </header>
+          <div className="benefits-grid relative z-10 mx-auto mt-12 grid max-w-[1400px] gap-10 px-6 text-white/75 sm:grid-cols-2 sm:px-12 lg:grid-cols-3 lg:px-16">
+            {benefits.map((benefit, index) => (
+              <article
+                key={benefit}
+                className="benefit-flow group flex flex-col gap-3 pl-8 text-left transition duration-500 ease-out hover:-translate-y-1 hover:text-white"
+                style={{ animationDelay: `${index * 0.08}s` }}
+              >
+                <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/45">
+                  {String(index + 1).padStart(2, "0")} / Ventaja clave
+                </span>
+                <p className="text-base font-medium leading-relaxed text-white transition-colors duration-500 group-hover:text-brand-gold">
+                  {benefit}
+                </p>
+                <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-brand-gold/80 transition duration-500 group-hover:translate-x-1 group-hover:text-white">
+                  Confianza VR
+                  <span
+                    className="h-[1px] w-10 bg-gradient-to-r from-brand-gold to-transparent"
+                    aria-hidden="true"
+                  />
+                </span>
+              </article>
+            ))}
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {destacados.map((p) => (
-            <FeaturedProjectCard key={p.id} project={p} />
-          ))}
+        <div className="mx-auto mt-16 max-w-7xl px-6">
+          <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
+                Selección personalizado
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-semibold text-brand-navy md:text-4xl">
+                PROYECTOS SELECCIONADOS POR SU VALOR, DISEÑO Y PROYECCIÓN
+              </h2>
+              <p className="mt-3 text-sm text-brand-mute md:text-base">
+                Te presentamos opciones con excelente ubicación, financiamiento
+                flexible y respaldo profesional, para invertir o vivir con
+                tranquilidad.
+              </p>
+            </div>
+            <Link
+              href="/proyectos"
+              className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.2)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
+            >
+              Explorar proyectos
+            </Link>
+          </header>
+
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {destacados.map((p) => (
+              <FeaturedProjectCard key={p.id} project={p} />
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* FRANJA DE CONFIANZA */}
-      <TrustStrip />
-
       {/* SECCIÓN: PROPÓSITO */}
       <section className="mx-auto max-w-7xl px-6 py-12">
-        <div className="relative overflow-hidden rounded-[48px] border border-brand-gold/25 bg-white/70 px-8 py-16 shadow-[0_36px_110px_rgba(14,33,73,0.14)] backdrop-blur-2xl md:px-20">
-          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[48px] bg-[radial-gradient(140%_140%_at_-10%_-15%,rgba(237,201,103,0.22)_0%,rgba(250,242,224,0.55)_45%,rgba(255,255,255,0)_75%),radial-gradient(120%_120%_at_110%_120%,rgba(209,174,76,0.18)_0%,rgba(255,255,255,0)_55%)]" />
-          <span className="pointer-events-none absolute inset-x-16 top-0 h-[3px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.95)_22%,rgba(255,242,210,1)_50%,rgba(237,201,103,0.95)_78%,rgba(168,120,24,0)_100%)] [background-size:220%_100%] animate-goldenPulse" />
-          <span className="pointer-events-none absolute -left-[18%] top-1/2 h-[160%] w-[55%] -translate-y-1/2 rotate-[12deg] rounded-full bg-[linear-gradient(120deg,rgba(255,245,225,0)_0%,rgba(255,250,235,0.75)_55%,rgba(255,250,235,0)_100%)] blur-3xl opacity-70" />
-          <span className="pointer-events-none absolute -right-[20%] top-0 h-[150%] w-[60%] rounded-full bg-[linear-gradient(130deg,rgba(185,137,29,0)_0%,rgba(237,201,103,0.36)_45%,rgba(185,137,29,0)_100%)] blur-3xl opacity-50" />
+        <div className="relative overflow-hidden rounded-[48px] border border-transparent bg-white/85 px-8 py-16 shadow-[0_45px_140px_rgba(14,33,73,0.22)] backdrop-blur-2xl md:px-20">
+          <span className="golden-ambient pointer-events-none absolute inset-0 -z-10 rounded-[48px]" />
+          <span className="golden-border pointer-events-none absolute inset-x-12 top-0 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.95)_22%,rgba(255,242,210,1)_50%,rgba(237,201,103,0.95)_78%,rgba(168,120,24,0)_100%)] [background-size:220%_100%]" />
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-brand-gold/60 to-transparent opacity-70" />
           <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center">
-            <h3 className="font-display text-[34px] font-semibold uppercase tracking-[0.12em] text-brand-navy md:text-[42px]">
+            <h3 className="font-display text-[34px] font-semibold uppercase tracking-[0.12em] text-brand-navy drop-shadow-[0_8px_30px_rgba(0,0,0,0.12)] md:text-[42px]">
               INVIERTE CON PROPÓSITO, VIVE CON ESTILO
             </h3>
-            <p className="text-base font-medium tracking-[0.08em] text-brand-navy/65 md:text-lg">
+            <p className="text-base font-medium tracking-[0.08em] text-brand-navy/75 drop-shadow-[0_4px_20px_rgba(0,0,0,0.08)] md:text-lg">
               Proyectos únicos, beneficios exclusivos.
             </p>
           </div>
         </div>
       </section>
-
-      {/* Pilares */}
-      <SignaturePillars />
 
       {/* SECCIÓN: ESTADÍSTICAS */}
       <section className="mx-auto max-w-7xl px-6 py-16">

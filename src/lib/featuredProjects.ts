@@ -30,7 +30,7 @@ export const FEATURED_TARGETS: FeaturedTarget[] = [
       arriendoGarantizado: false,
       creditoInterno: true,
       descripcion:
-        "Departamentos con vistas al Parque Metropolitano, amenities boutique y conectividad premium.",
+        "Departamentos con vistas al Parque Metropolitano, amenities exclusivos y conectividad sobresaliente.",
       imagenPath:
         "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
     },

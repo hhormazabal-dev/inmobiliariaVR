@@ -69,8 +69,6 @@ export default function SignaturePillars() {
   const openMoment =
     typeof activeIndex === "number" ? MOMENTS[activeIndex] : null;
   const totalSteps = MOMENTS.length;
-  const progressPercent =
-    activeIndex !== null ? ((activeIndex + 1) / totalSteps) * 100 : 0;
   const handleClose = (event?: MouseEvent<HTMLElement>) => {
     event?.stopPropagation();
     setActive(null);
@@ -94,109 +92,73 @@ export default function SignaturePillars() {
   };
 
   return (
-    <section className="relative w-full py-20">
-      <div className="absolute inset-x-0 top-0 -z-10 h-[420px] bg-sunrise-blur blur-[140px]" />
+    <section className="relative isolate w-full overflow-hidden py-24">
+      <div className="absolute inset-0 -z-20 bg-gradient-to-br from-[#010308] via-[#050d1a] to-[#0c1c35]" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-[420px] bg-sunrise-blur opacity-70 blur-[180px]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-70">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(237,201,103,0.18),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.14),transparent_55%)]" />
+      </div>
       <div className="mx-auto max-w-7xl px-6">
-        <header className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
+        <header className="max-w-3xl text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold/80">
             SOMOS <span className="tracking-normal">VR</span> INMOBILIARIA
           </p>
-          <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-brand-navy md:text-[2.6rem]">
+          <h2 className="mt-3 font-display text-3xl font-semibold leading-snug text-white md:text-[2.8rem]">
             CERCANÍA REAL, DECISIONES INTELIGENTES
           </h2>
-          <p className="mt-3 text-sm text-brand-mute md:text-base">
-            En VR Inmobiliaria te acompañamos con asesoría gratuita, humana,
-            claridad y respaldo en cada paso para que invertir o comprar tu
-            hogar sea una experiencia segura y satisfactoria.
+          <p className="mt-5 text-sm text-white/70 md:text-base">
+            Invertir con VR significa contar con una asesoría corporativa que
+            lee el mercado por ti, usa datos para decidir y mantiene la
+            experiencia humana en cada hito.
           </p>
         </header>
-      </div>
-
-      {/* Horizontal timeline */}
-      <div className="relative mt-16 w-full overflow-hidden border-y border-white/10 bg-[#050b15] py-16 text-white shadow-[0_60px_160px_rgba(3,9,24,0.65)]">
-        <div className="timeline-glow pointer-events-none absolute inset-0" />
-        <div className="timeline-ribbon pointer-events-none absolute inset-0 opacity-40" />
-        <div className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 px-6 md:px-10">
-          <div className="flex flex-col gap-3 text-sm uppercase tracking-[0.3em] text-white/60 md:flex-row md:items-center md:justify-between">
-            <span>Experiencia VR en 3 momentos clave</span>
-            <span className="text-white/40">
-              Desliza ↔ para explorar cada etapa
-            </span>
-          </div>
-          <div className="relative">
-            <div className="timeline-beam pointer-events-none absolute left-0 right-0 top-[78px] hidden h-[2px] -translate-y-1/2 opacity-60 lg:block" />
-            <div className="relative overflow-x-auto pb-12 pt-10">
-              <div className="flex min-w-max gap-8 snap-x snap-mandatory">
-                {MOMENTS.map(({ title, description, image, tag }, index) => (
-                  <article
-                    key={title}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => setActive(index)}
-                    onKeyDown={(event) => handleCardKey(event, index)}
-                    aria-label={`Abrir detalles de ${title}`}
-                    className="group relative w-[280px] snap-center rounded-[36px] border border-white/10 bg-white/5 px-4 pb-6 pt-8 text-left backdrop-blur transition hover:-translate-y-1 hover:border-brand-gold/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-gold/40 md:w-[320px]"
-                  >
-                    <span className="pointer-events-none absolute left-1/2 top-3 hidden h-3 w-3 -translate-x-1/2 rounded-full bg-gradient-to-br from-brand-gold to-white shadow-[0_0_15px_rgba(237,201,103,0.9)] lg:inline-block" />
-                    <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.4em] text-white/60">
-                      <span>Paso</span>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                    </div>
-                    <div className="mt-4 h-36 w-full overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-[0_25px_70px_rgba(4,8,20,0.6)]">
-                      <SafeImage
-                        src={image}
-                        alt={title}
-                        fill
-                        className="object-cover transition duration-[1200ms] group-hover:scale-[1.08]"
-                        sizes="(max-width: 768px) 80vw, 20vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <span className="absolute left-4 top-4 inline-flex rounded-full border border-white/30 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.35em] text-white/90 backdrop-blur">
-                        {tag}
-                      </span>
-                    </div>
-                    <div className="mt-5 space-y-3">
-                      <h3 className="text-lg font-semibold leading-snug text-white">
-                        {title}
-                      </h3>
-                      <p className="text-xs leading-relaxed text-white/70">
-                        {description}
-                      </p>
-                    </div>
-                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.35em] text-white/55">
-                      <span className="inline-flex items-center gap-1">
-                        Ruta VR
-                        <span
-                          className="h-[2px] w-10 bg-gradient-to-r from-brand-gold to-transparent"
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setActive(index);
-                        }}
-                        className="inline-flex items-center gap-2 rounded-full border border-white/25 px-3 py-1 text-[10px] tracking-[0.35em] text-white transition hover:border-brand-gold hover:text-brand-gold"
-                      >
-                        Ver +
-                        <svg
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={1.4}
-                          className="h-3 w-3"
-                          aria-hidden="true"
-                        >
-                          <path d="M5 10h9" />
-                          <path d="m10 5 5 5-5 5" />
-                        </svg>
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
+        <div className="mt-14">
+          <div className="flex flex-col gap-6 text-white md:flex-row md:items-end md:justify-between">
+            <p className="max-w-2xl text-sm leading-relaxed text-white/70 md:text-base lg:text-lg">
+              Diseñamos rutas de inversión con visión de largo plazo, alineadas
+              a tu patrimonio y apetito de riesgo. Cada momento del proceso está
+              pensado para brindarte claridad, agilidad y respaldo ejecutivo.
+            </p>
+            <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.35em] text-white/50">
+              <span>Ruta estratégica</span>
+              <span className="hidden h-px flex-1 bg-white/20 md:block" />
+              <span>{String(totalSteps).padStart(2, "0")} hitos</span>
             </div>
+          </div>
+          <div className="mt-10 hidden h-px w-full bg-gradient-to-r from-transparent via-white/25 to-transparent md:block" />
+          <div className="mt-10 grid gap-10 text-white md:grid-cols-3 md:gap-14">
+            {MOMENTS.map(({ title, description, tag }, index) => (
+              <article
+                key={title}
+                role="button"
+                tabIndex={0}
+                onClick={() => setActive(index)}
+                onKeyDown={(event) => handleCardKey(event, index)}
+                aria-label={`Ver detalle de ${title}`}
+                className="pillar-fade group relative cursor-pointer space-y-4 text-left text-white/75 transition duration-500 ease-out hover:-translate-y-1 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-gold/40"
+                style={{ animationDelay: `${index * 0.12}s` }}
+              >
+                <div className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.35em] text-white/45">
+                  <span>Paso {String(index + 1).padStart(2, "0")}</span>
+                  <span className="h-px flex-1 bg-white/15" />
+                  <span className="text-brand-gold/80">{tag}</span>
+                </div>
+                <h3 className="font-display text-2xl font-semibold leading-tight text-white transition-colors duration-500 group-hover:text-brand-gold">
+                  {title}
+                </h3>
+                <p className="text-sm leading-relaxed text-white/70 transition-colors duration-500 group-hover:text-white/85">
+                  {description}
+                </p>
+                <div className="inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.35em] text-brand-gold/80 transition duration-500 group-hover:translate-x-1 group-hover:text-white">
+                  <span>Explorar detalle</span>
+                  <span
+                    className="h-[2px] w-12 bg-gradient-to-r from-brand-gold to-transparent"
+                    aria-hidden="true"
+                  />
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </div>
