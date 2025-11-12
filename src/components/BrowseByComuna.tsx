@@ -154,6 +154,9 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
                   : NaN,
               );
 
+        const fallbackImage =
+          resolveImageAsset(target.fallback.imagen) ?? undefined;
+
         project = {
           id: data.id ?? `showcase-${slug}`,
           slug,
@@ -166,13 +169,15 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
           creditoInterno: target.fallback.creditoInterno,
           descripcion: data.description?.trim() ?? target.fallback.descripcion,
           imagen: resolvedCover,
-          imagenFallback: resolveImageAsset(target.fallback.imagen),
+          imagenFallback: fallbackImage,
         };
       }
     }
 
     if (!project) {
       const slug = buildProjectSlug(target.name, target.comuna);
+      const fallbackImage =
+        resolveImageAsset(target.fallback.imagen) ?? undefined;
       project = {
         id: `showcase-${slug}`,
         slug,
@@ -184,9 +189,8 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
         arriendoGarantizado: target.fallback.arriendoGarantizado,
         creditoInterno: target.fallback.creditoInterno,
         descripcion: target.fallback.descripcion,
-        imagen:
-          resolveImageAsset(target.fallback.imagen) ?? FALLBACK_IMAGE_DATA,
-        imagenFallback: resolveImageAsset(target.fallback.imagen),
+        imagen: fallbackImage ?? FALLBACK_IMAGE_DATA,
+        imagenFallback: fallbackImage,
       };
     }
 

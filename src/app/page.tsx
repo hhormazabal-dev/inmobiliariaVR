@@ -123,33 +123,37 @@ export default async function HomePage() {
       </section>
 
       {/* SECCIÓN: PROPÓSITO */}
-      <section className="mx-auto max-w-7xl px-6 py-12">
-        <div className="relative overflow-hidden rounded-[48px] border border-transparent bg-white/85 px-8 py-16 shadow-[0_45px_140px_rgba(14,33,73,0.22)] backdrop-blur-2xl md:px-20">
-          <span className="golden-ambient pointer-events-none absolute inset-0 -z-10 rounded-[48px]" />
-          <span className="golden-border pointer-events-none absolute inset-x-12 top-0 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.95)_22%,rgba(255,242,210,1)_50%,rgba(237,201,103,0.95)_78%,rgba(168,120,24,0)_100%)] [background-size:220%_100%]" />
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-brand-gold/60 to-transparent opacity-70" />
-          <div className="relative z-10 mx-auto max-w-3xl space-y-4 text-center">
-            <h3 className="font-display text-[34px] font-semibold uppercase tracking-[0.12em] text-brand-navy drop-shadow-[0_8px_30px_rgba(0,0,0,0.12)] md:text-[42px]">
-              INVIERTE CON PROPÓSITO, VIVE CON ESTILO
-            </h3>
-            <p className="text-base font-medium tracking-[0.08em] text-brand-navy/75 drop-shadow-[0_4px_20px_rgba(0,0,0,0.08)] md:text-lg">
-              Proyectos únicos, beneficios exclusivos.
-            </p>
+      <section className="px-6 py-16">
+        <div className="purpose-banner relative mx-auto max-w-7xl overflow-hidden rounded-[56px] px-8 py-16 text-center text-white md:px-16 md:text-left">
+          <div className="purpose-rings" aria-hidden="true" />
+          <div className="purpose-orbit" aria-hidden="true" />
+          <div className="relative z-10 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.8fr)] md:items-center">
+            <div className="space-y-6">
+              <h3 className="font-display text-[34px] font-semibold leading-tight tracking-[0.08em] uppercase md:text-[46px]">
+                INVIERTE CON PROPÓSITO,
+                <span className="block text-[32px] tracking-[0.2em] text-white/85 md:text-[40px]">
+                  VIVE CON ESTILO
+                </span>
+              </h3>
+            </div>
+            <div className="purpose-pill rounded-[999px] border border-white/40 bg-white/80 px-8 py-6 shadow-[0_25px_80px_rgba(10,23,56,0.25)] backdrop-blur">
+              <p className="text-base font-medium text-brand-navy/80 md:text-lg">
+                Proyectos únicos, beneficios exclusivos.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* SECCIÓN: ESTADÍSTICAS */}
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="relative overflow-hidden rounded-[44px] border border-brand-gold/25 bg-white/70 px-8 py-12 shadow-[0_34px_90px_rgba(14,33,73,0.08)] backdrop-blur-xl md:px-16">
-          <span className="pointer-events-none absolute inset-0 -z-10 rounded-[44px] bg-[radial-gradient(120%_120%_at_0%_0%,rgba(237,201,103,0.18)_0%,rgba(255,245,228,0.42)_45%,rgba(242,232,206,0.4)_65%,rgba(247,245,238,0)_100%)]" />
-          <span className="pointer-events-none absolute inset-x-10 top-0 h-[2px] rounded-full bg-[linear-gradient(90deg,rgba(168,120,24,0)_0%,rgba(237,201,103,0.85)_20%,rgba(255,236,210,0.9)_50%,rgba(237,201,103,0.85)_80%,rgba(168,120,24,0)_100%)] animate-goldenPulse" />
-          <div className="relative grid gap-10 md:grid-cols-[minmax(0,0.5fr)_minmax(0,1fr)] md:items-center">
-            <div className="space-y-4">
+      <section className="px-6 py-20">
+        <div className="metrics-lab relative mx-auto max-w-7xl overflow-hidden rounded-[48px] px-8 py-16 md:px-16">
+          <div className="metrics-grid relative z-10 grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <div className="space-y-5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.5em] text-brand-gold/80">
                 Confianza
               </p>
-              <h3 className="text-2xl font-semibold text-brand-navy md:text-[32px] md:leading-[1.2]">
+              <h3 className="text-2xl font-semibold text-brand-navy md:text-[34px] md:leading-[1.2]">
                 Cada número representa una historia de confianza auténtica.
               </h3>
               <p className="text-sm text-brand-mute">
@@ -157,10 +161,9 @@ export default async function HomePage() {
                 gestionar sus inversiones y nuevos hogares.
               </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
-                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
-                <div className="relative space-y-3">
+            <div className="metric-track grid gap-5 sm:grid-cols-3">
+              <article className="metric-tile">
+                <div className="metric-node">
                   <AnimatedCounter
                     value={180}
                     suffix="+"
@@ -171,10 +174,9 @@ export default async function HomePage() {
                     Inmobiliaria.
                   </p>
                 </div>
-              </div>
-              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
-                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
-                <div className="relative space-y-3">
+              </article>
+              <article className="metric-tile">
+                <div className="metric-node">
                   <AnimatedCounter
                     value={96}
                     suffix="%"
@@ -185,10 +187,9 @@ export default async function HomePage() {
                     y personalización.
                   </p>
                 </div>
-              </div>
-              <div className="group relative overflow-hidden rounded-[28px] border border-white/50 bg-white/90 p-6 shadow-[0_22px_60px_rgba(14,33,73,0.07)] transition hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(14,33,73,0.09)]">
-                <span className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(120%_95%_at_0%_0%,rgba(237,201,103,0.18),rgba(255,255,255,0))]" />
-                <div className="relative space-y-3">
+              </article>
+              <article className="metric-tile">
+                <div className="metric-node">
                   <span className="flex items-baseline gap-1 text-4xl font-semibold text-brand-navy md:text-[42px]">
                     <AnimatedCounter value={24} className="leading-none" />
                     <span className="text-base font-medium uppercase tracking-[0.3em] text-brand-navy/70 md:text-lg">
@@ -200,7 +201,7 @@ export default async function HomePage() {
                     especializado.
                   </p>
                 </div>
-              </div>
+              </article>
             </div>
           </div>
         </div>
