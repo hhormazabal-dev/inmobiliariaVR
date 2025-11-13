@@ -28,13 +28,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const chatEnabled =
+    process.env.NEXT_PUBLIC_SHOW_CHAT_WIDGET === "true" ||
+    process.env.NEXT_PUBLIC_ENABLE_CHAT_WIDGET === "true";
+
   return (
     <html lang="es" className={`${display.variable} ${sans.variable}`}>
       <body className="font-sans text-brand-text antialiased">
         <Navbar />
         <main className="bg-transparent">{children}</main>
         <Footer />
-        <FloatingChatWidget />
+        {chatEnabled ? <FloatingChatWidget /> : null}
       </body>
     </html>
   );

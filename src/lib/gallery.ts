@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { normalizeStoragePath, toPublicStorageUrl } from "@/lib/supabaseImages";
+import { resolveFolderName } from "@/lib/galleryFolders";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -10,11 +11,9 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   );
 }
 
-const FOLDER_BY_NAME: Record<string, string> = {
-  "All Ñuñoa": "All Nunoa",
-  "All Ñuñoa II": "All Nunoa II",
-  "Best Level Ñuñoa": "Best Level Nunoa",
-  "Best Ñuñoa": "Best Nunoa",
+export type ProjectGalleryAssets = {
+  images: string[];
+  brochure: string | null;
 };
 
 const supabase =
@@ -26,14 +25,12 @@ const supabase =
       })
     : null;
 
-function resolveFolderName(projectName: string) {
-  const trimmed = projectName?.trim();
-  if (!trimmed) return "";
-  return FOLDER_BY_NAME[trimmed] || trimmed;
-}
-
 function isImageFile(name: string) {
   return /\.(jpe?g|png|webp|gif|heic)$/i.test(name);
+}
+
+function isPdfFile(name: string) {
+  return /\.pdf$/i.test(name);
 }
 
 function extractFolderFromUrl(url?: string) {
@@ -71,9 +68,13 @@ export async function listProjectImages(
   projectName: string,
   coverUrl?: string,
   comuna?: string,
-): Promise<string[]> {
-  async function fetchViaApi() {
-    if (!projectName) return [];
+): Promise<ProjectGalleryAssets> {
+  async function fetchViaApi(): Promise<ProjectGalleryAssets> {
+    if (!projectName)
+      return {
+        images: [],
+        brochure: null,
+      };
     const params = new URLSearchParams();
     params.set("name", projectName);
     if (comuna) params.set("comuna", comuna);
@@ -90,27 +91,34 @@ export async function listProjectImages(
           res.status,
           await res.text(),
         );
-        return [];
+        return { images: [], brochure: null };
       }
-      const data = (await res.json()) as { images?: string[] };
-      return data.images ?? [];
+      const data = (await res.json()) as {
+        images?: string[];
+        brochure?: string | null;
+      };
+      return {
+        images: data.images ?? [],
+        brochure: data.brochure ?? null,
+      };
     } catch (error) {
       console.error("[gallery] Error usando fallback API:", error);
-      return [];
+      return { images: [], brochure: null };
     }
   }
 
-  const apiImages = await fetchViaApi();
+  const apiResult = await fetchViaApi();
+  let brochure: string | null = apiResult.brochure ?? null;
   let bestImages = Array.from(
     new Set(
-      apiImages
+      (apiResult.images ?? [])
         .map((value) => toPublicStorageUrl(value))
         .filter((url): url is string => Boolean(url)),
     ),
   );
 
   if (!supabase || !SUPABASE_URL) {
-    return bestImages;
+    return { images: bestImages, brochure };
   }
 
   const folderFromName = resolveFolderName(projectName);
@@ -130,12 +138,23 @@ export async function listProjectImages(
   );
 
   if (foldersToVisit.length === 0) {
-    return bestImages;
+    return { images: bestImages, brochure };
   }
 
   const visited = new Set<string>();
   const files: { name: string; path: string }[] = [];
   const storagePathSet = new Set<string>();
+  const setBrochureFromPath = (path: string | null | undefined) => {
+    if (!path) return;
+    const normalized = normalizeStoragePath(path);
+    if (!normalized) return;
+    const url = toPublicStorageUrl(normalized);
+    if (!url) return;
+    const preferred = /(?:^|\/)1\.pdf$/i.test(normalized);
+    if (!brochure || preferred) {
+      brochure = url;
+    }
+  };
 
   async function collect(currentFolder: string) {
     if (visited.has(currentFolder)) {
@@ -170,12 +189,17 @@ export async function listProjectImages(
         continue;
       }
 
-      if (isImageFile(entry.name)) {
-        const normalizedPath = normalizeStoragePath(entryPath);
-        if (!normalizedPath) continue;
-        storagePathSet.add(normalizedPath.toLowerCase());
-        files.push({ name: entry.name, path: normalizedPath });
+      if (isPdfFile(entry.name)) {
+        setBrochureFromPath(entryPath);
+        continue;
       }
+
+      if (!isImageFile(entry.name)) continue;
+
+      const normalizedPath = normalizeStoragePath(entryPath);
+      if (!normalizedPath) continue;
+      storagePathSet.add(normalizedPath.toLowerCase());
+      files.push({ name: entry.name, path: normalizedPath });
     }
   }
 
@@ -211,6 +235,15 @@ export async function listProjectImages(
           for (const entry of row.gallery_urls) {
             if (!entry) continue;
             const normalizedEntry = normalizeStoragePath(entry);
+            const entryName =
+              normalizedEntry?.split("/").pop() ??
+              entry.split("/").pop() ??
+              entry;
+            if (isPdfFile(entryName)) {
+              setBrochureFromPath(normalizedEntry ?? entry);
+              continue;
+            }
+            if (!isImageFile(entryName)) continue;
             const publicUrl = toPublicStorageUrl(entry);
             if (!publicUrl) continue;
             if (storagePathSet.size > 0) {
@@ -236,6 +269,17 @@ export async function listProjectImages(
 
         if (row.cover_url) {
           const normalizedCover = normalizeStoragePath(row.cover_url);
+          const coverName =
+            normalizedCover?.split("/").pop() ??
+            row.cover_url.split("/").pop() ??
+            row.cover_url;
+          if (isPdfFile(coverName)) {
+            setBrochureFromPath(normalizedCover ?? row.cover_url);
+            continue;
+          }
+          if (!isImageFile(coverName)) {
+            continue;
+          }
           if (normalizedCover) {
             storagePathSet.add(normalizedCover.toLowerCase());
             files.push({
@@ -297,7 +341,10 @@ export async function listProjectImages(
     );
   }
 
-  return bestImages;
+  return {
+    images: bestImages,
+    brochure,
+  };
 }
 
-export { FOLDER_BY_NAME };
+export { FOLDER_BY_NAME } from "@/lib/galleryFolders";

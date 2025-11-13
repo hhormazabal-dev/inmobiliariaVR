@@ -34,6 +34,11 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const coverImage = toPublicStorageUrl(project.imagen) ?? FALLBACK_IMAGE_DATA;
   const [images, setImages] = useState<string[]>(() => [coverImage]);
   const [idx, setIdx] = useState(0);
+  const fallbackBrochure =
+    process.env.NEXT_PUBLIC_BROCHURE_LINK ||
+    process.env.NEXT_PUBLIC_CAL_LINK ||
+    "https://cal.com/tu-org/visita-proyecto";
+  const [brochureUrl, setBrochureUrl] = useState<string>(fallbackBrochure);
 
   useEffect(() => {
     let active = true;
@@ -43,7 +48,8 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
         return;
       }
       setIdx(0);
-      const urls = await listProjectImages(
+      setBrochureUrl(fallbackBrochure);
+      const { images: urls, brochure } = await listProjectImages(
         project.titulo,
         project.imagen,
         project.comuna,
@@ -55,6 +61,9 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
       const unique = Array.from(new Set([...normalized, cover ?? coverImage]));
       if (active) {
         setImages(unique.length > 0 ? unique : [coverImage]);
+        if (brochure) {
+          setBrochureUrl(brochure);
+        }
       }
     }
 
@@ -62,7 +71,14 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
     return () => {
       active = false;
     };
-  }, [coverImage, open, project.comuna, project.imagen, project.titulo]);
+  }, [
+    coverImage,
+    fallbackBrochure,
+    open,
+    project.comuna,
+    project.imagen,
+    project.titulo,
+  ]);
 
   const next = () => setIdx((i) => (i + 1) % images.length);
   const prev = () => setIdx((i) => (i - 1 + images.length) % images.length);
@@ -72,10 +88,8 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}). ¿Podemos coordinar una asesoría gratuita?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
-  const brochureLink =
-    process.env.NEXT_PUBLIC_BROCHURE_LINK ||
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const brochureLink = brochureUrl || fallbackBrochure;
+  const brochureIsPdf = /\.pdf(?:\?|$)/i.test(brochureLink);
   const descripcion =
     project.descripcion?.trim() ||
     "Consulta con nuestro equipo para conocer todos los detalles de este proyecto.";
@@ -130,7 +144,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
 
         {/* Detalles */}
         <div className="flex flex-col gap-4 p-6">
-          <div className="rounded-2xl bg-brand-sand/70 p-4">
+          <div className="rounded-2xl bg-[rgba(237,201,103,0.14)] p-4">
             {project.entrega === "inmediata" && (
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-mute">
                 {entregaLabel}
@@ -150,7 +164,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-mute">
+          <div className="rounded-2xl bg-[rgba(237,201,103,0.12)] p-4 text-sm text-brand-mute">
             {descripcion}
           </div>
 
@@ -169,6 +183,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
               href={brochureLink}
               target="_blank"
               rel="noopener noreferrer"
+              download={brochureIsPdf ? "" : undefined}
               className="rounded-full bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-4 py-2 text-sm font-medium text-white shadow-[0_16px_40px_rgba(237,201,103,0.22)] hover:shadow-[0_20px_50px_rgba(237,201,103,0.28)]"
             >
               Descargar brochure

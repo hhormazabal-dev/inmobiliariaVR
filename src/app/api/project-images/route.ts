@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { normalizeStoragePath, toPublicStorageUrl } from "@/lib/supabaseImages";
+import { resolveFolderName } from "@/lib/galleryFolders";
 
 type Entry = { name: string; path: string };
 
@@ -31,8 +32,13 @@ function isImageFile(name: string) {
   return /\.(jpe?g|png|webp|gif|heic)$/i.test(name);
 }
 
+function isPdfFile(name: string) {
+  return /\.pdf$/i.test(name);
+}
+
 function folderFromPath(path: string) {
-  const segments = path.split("/").filter(Boolean);
+  const normalized = normalizeStoragePath(path) ?? path;
+  const segments = normalized.split("/").filter(Boolean);
   if (segments.length === 0) {
     return "";
   }
@@ -50,6 +56,23 @@ async function gatherImages(
   const folders = new Set<string>();
   const storage = client.storage.from("projects");
   const storagePathSet = new Set<string>();
+  let brochure: string | null = null;
+  const setBrochureFromPath = (path: string | null | undefined) => {
+    if (!path) return;
+    const normalized = normalizeStoragePath(path);
+    if (!normalized) return;
+    const url = toPublicStorageUrl(normalized);
+    if (!url) return;
+    const preferred = /(?:^|\/)1\.pdf$/i.test(normalized);
+    if (!brochure || preferred) {
+      brochure = url;
+    }
+  };
+
+  const resolvedNameFolder = resolveFolderName(name);
+  if (resolvedNameFolder) {
+    folders.add(resolvedNameFolder);
+  }
 
   const { data: rows, error } = await client
     .from("projects")
@@ -75,12 +98,22 @@ async function gatherImages(
       const normalizedCover = normalizeStoragePath(cover);
       if (normalizedCover) {
         folders.add(folderFromPath(cover));
-        storagePathSet.add(normalizedCover.toLowerCase());
-        files.push({
-          name: normalizedCover.split("/").pop() ?? normalizedCover,
-          path: normalizedCover,
-        });
+        const coverName = normalizedCover.split("/").pop() ?? normalizedCover;
+        if (isPdfFile(coverName)) {
+          setBrochureFromPath(normalizedCover);
+        } else {
+          storagePathSet.add(normalizedCover.toLowerCase());
+          files.push({
+            name: coverName,
+            path: normalizedCover,
+          });
+        }
       }
+    }
+
+    const resolvedFolder = resolveFolderName(row.name ?? "");
+    if (resolvedFolder) {
+      folders.add(resolvedFolder);
     }
 
     const slugName = slugify(row.name ?? "");
@@ -94,8 +127,14 @@ async function gatherImages(
 
     for (const entry of row.gallery_urls ?? []) {
       if (!entry) continue;
+      const normalizedEntry = normalizeStoragePath(entry);
+      const entryName =
+        normalizedEntry?.split("/").pop() ?? entry.split("/").pop() ?? entry;
+      if (isPdfFile(entryName)) {
+        setBrochureFromPath(normalizedEntry ?? entry);
+        continue;
+      }
       if (/^https?:\/\//i.test(entry)) {
-        const normalizedEntry = normalizeStoragePath(entry);
         const publicUrl = toPublicStorageUrl(entry);
         if (!publicUrl) continue;
         if (storagePathSet.size > 0) {
@@ -107,23 +146,48 @@ async function gatherImages(
         if (normalizedEntry) {
           storagePathSet.add(normalizedEntry.toLowerCase());
           files.push({
-            name: normalizedEntry.split("/").pop() ?? normalizedEntry,
+            name: entryName,
             path: normalizedEntry,
           });
         } else {
-          files.push({ name: entry.split("/").pop() ?? entry, path: entry });
+          files.push({ name: entryName, path: entry });
         }
       } else {
-        files.push({
-          name: entry.split("/").pop() ?? entry,
-          path: normalizeStoragePath(entry) ?? entry.replace(/^\/+/, ""),
-        });
+        const normalized = normalizeStoragePath(entry);
+        if (normalized) {
+          storagePathSet.add(normalized.toLowerCase());
+          files.push({
+            name: entryName,
+            path: normalized,
+          });
+        } else {
+          files.push({
+            name: entryName,
+            path: entry.replace(/^\/+/, ""),
+          });
+        }
       }
     }
   }
 
   if (coverUrl) {
-    folders.add(folderFromPath(coverUrl));
+    const folder = folderFromPath(coverUrl);
+    if (folder) {
+      folders.add(folder);
+    }
+    const normalizedCover = normalizeStoragePath(coverUrl);
+    if (normalizedCover) {
+      const coverName = normalizedCover.split("/").pop() ?? normalizedCover;
+      if (isPdfFile(coverName)) {
+        setBrochureFromPath(normalizedCover);
+      } else {
+        storagePathSet.add(normalizedCover.toLowerCase());
+        files.push({
+          name: coverName,
+          path: normalizedCover,
+        });
+      }
+    }
   }
 
   async function collectFolder(prefix: string) {
@@ -147,6 +211,10 @@ async function gatherImages(
       if (!entry?.name) continue;
       const path = prefix ? `${prefix}/${entry.name}` : entry.name;
       if (entry.id) {
+        if (isPdfFile(entry.name)) {
+          setBrochureFromPath(path);
+          continue;
+        }
         if (!isImageFile(entry.name)) continue;
         const normalized = normalizeStoragePath(path);
         if (!normalized) continue;
@@ -198,7 +266,7 @@ async function gatherImages(
       folders.size
     } files:${files.length} unique:${result.length}`,
   );
-  return result;
+  return { images: result, brochure };
 }
 
 export async function GET(request: Request) {
@@ -226,8 +294,13 @@ export async function GET(request: Request) {
   });
 
   try {
-    const images = await gatherImages(client, name, comuna, coverUrl);
-    return NextResponse.json({ images });
+    const { images, brochure } = await gatherImages(
+      client,
+      name,
+      comuna,
+      coverUrl,
+    );
+    return NextResponse.json({ images, brochure });
   } catch (error) {
     console.error("[api/project-images] Unexpected error:", error);
     return NextResponse.json(

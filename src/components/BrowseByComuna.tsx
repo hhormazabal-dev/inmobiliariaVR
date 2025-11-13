@@ -44,6 +44,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
       desdeUF: 2300,
       entrega: "en_verde",
       creditoInterno: true,
+      imagen: "quilicura/plaza-quilicura/portada.jpg",
     },
   },
   {
@@ -94,7 +95,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
       desdeUF: 2950,
       entrega: "en_verde",
       arriendoGarantizado: true,
-      imagen: "supabase:conecta-huechuraba/cover.jpg",
+      imagen: "huechuraba/conecta/portada.jpg",
     },
   },
 ];

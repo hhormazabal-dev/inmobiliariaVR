@@ -63,9 +63,9 @@ export default function FeaturedProjectCard({ project }: Props) {
         whileHover={{ y: -6 }}
         whileTap={{ scale: 0.99 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="group relative overflow-hidden rounded-3xl border border-white/60 bg-white/90 shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
+        className="group relative overflow-hidden rounded-3xl border border-white/60 bg-[radial-gradient(circle_at_8%_0%,rgba(237,201,103,0.32),rgba(255,255,255,0.96)55%),linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.86))] shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
       >
-        <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(237,201,103,0.18),rgba(255,255,255,0)),radial-gradient(circle_at_80%_20%,rgba(14,33,73,0.08),rgba(255,255,255,0))] opacity-0 transition group-hover:opacity-100" />
+        <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(237,201,103,0.32),rgba(255,255,255,0)),radial-gradient(circle_at_80%_20%,rgba(14,33,73,0.08),rgba(255,255,255,0))] opacity-0 transition group-hover:opacity-100" />
         {/* Imagen */}
         <div className="relative h-48 w-full overflow-hidden">
           <SafeImage
@@ -115,7 +115,7 @@ export default function FeaturedProjectCard({ project }: Props) {
             </div>
           </header>
 
-          <div className="rounded-2xl bg-brand-sand/60 p-4 text-sm text-brand-mute">
+          <div className="rounded-2xl bg-[rgba(237,201,103,0.15)] p-4 text-sm text-brand-mute">
             <p>{descripcion}</p>
           </div>
 
@@ -125,7 +125,7 @@ export default function FeaturedProjectCard({ project }: Props) {
               onClick={() => setOpen(true)}
               className="rounded-full border border-brand-navy/10 bg-white px-4 py-2 text-sm font-medium text-brand-navy transition hover:border-brand-navy/25 hover:bg-white/90"
             >
-              Descargar brochure
+              Más información
             </button>
 
             <a
