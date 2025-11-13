@@ -6,6 +6,7 @@ import TestimonialsShowcase from "@/components/TestimonialsShowcase";
 import ContactBanner from "@/components/ContactBanner";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { fetchFeaturedProjects } from "@/lib/featuredProjects";
+import TypewriterHeadline from "@/components/TypewriterHeadline";
 
 const INSIGHTS = [
   {
@@ -79,131 +80,165 @@ export default async function HomePage() {
         </div>
 
         {/* 3) Bloque Beneficios */}
-        <div className="benefits-atrium relative w-full overflow-hidden py-16 text-white">
-          <div className="relative z-10 mx-auto flex max-w-[1400px] flex-col gap-12 px-6 sm:px-12 md:px-16 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl space-y-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-brand-gold/80">
-                Beneficios en VR Inmobiliaria
-              </p>
-              <h3 className="font-display text-[36px] font-semibold leading-tight text-white md:text-[46px]">
-                En VR Inmobiliaria te acompañamos con soluciones reales y
-                asesoría experta para que concretar tu inversión sea más fácil
-                que nunca.
-              </h3>
-              <p className="text-sm text-white/80 md:text-base">Ofrecemos:</p>
+        <div className="benefits-atrium relative mt-24 w-full overflow-hidden py-24 text-white sm:mt-28 lg:mt-32">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#080d1e] via-[#0a1832] to-[#050a18]"
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-[-20%] top-[-35%] h-[420px] bg-[radial-gradient(60%_75%_at_50%_40%,rgba(255,255,255,0.22),rgba(255,255,255,0.05)_55%,transparent)] opacity-80"
+          />
+          <div className="relative z-10 mx-auto max-w-[1400px] px-6 sm:px-12 md:px-16">
+            <div className="grid items-end gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+              <div className="space-y-8">
+                <div className="inline-flex items-center gap-4 text-[11px] font-semibold uppercase tracking-[0.45em] text-brand-gold/90">
+                  <span className="h-px w-12 bg-gradient-to-r from-transparent via-brand-gold/70 to-brand-gold/90" />
+                  <span>Beneficios en VR Inmobiliaria</span>
+                </div>
+                <TypewriterHeadline
+                  className="text-[34px] font-semibold md:text-[50px]"
+                  text={`En VR Inmobiliaria te acompañamos con soluciones reales y\nasesoría experta para que concretar tu inversión sea más fácil que nunca.`}
+                />
+                <p className="text-sm text-white/80 md:text-base">Ofrecemos:</p>
+              </div>
+              <div className="justify-self-start lg:justify-self-end">
+                <div className="flex flex-col gap-6 rounded-3xl border border-white/12 bg-white/10 px-10 py-10 text-white shadow-[0_26px_60px_rgba(5,9,24,0.5)] backdrop-blur-2xl">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/65">
+                    Programa integral
+                  </div>
+                  <div className="flex items-end gap-4">
+                    <span className="text-6xl font-semibold text-white">
+                      {String(benefits.length).padStart(2, "0")}
+                    </span>
+                    <span className="pb-2 text-[11px] font-semibold uppercase tracking-[0.65em] text-white/60">
+                      Beneficios
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white/50">
-              <span>Programa integral</span>
-              <span className="hidden h-px flex-1 bg-white/25 sm:block" />
-              <span>{String(benefits.length).padStart(2, "0")} beneficios</span>
+            <div className="relative mt-16">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-[-8%] inset-y-[-12%] -z-10 rounded-[48px] border border-white/5"
+              />
+              <div className="benefits-grid relative grid max-w-none gap-8 text-white/85 sm:grid-cols-2 lg:grid-cols-3">
+                {benefits.map((benefit, index) => {
+                  const isTrailingFeature =
+                    benefits.length % 3 === 1 && index === benefits.length - 1;
+
+                  return (
+                    <article
+                      key={benefit}
+                      className={`benefit-flow group flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.07] px-10 py-10 pl-12 text-left backdrop-blur-[22px] transition duration-500 ease-out hover:-translate-y-1 hover:border-white/40 hover:bg-white/10 hover:text-white ${
+                        isTrailingFeature
+                          ? "lg:col-span-3 lg:flex-row lg:items-center lg:gap-10 lg:px-14 lg:py-12"
+                          : ""
+                      }`}
+                      style={{ animationDelay: `${index * 0.12}s` }}
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="text-[36px] font-semibold leading-none tracking-[-0.08em] text-white">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/70">
+                          / Ventaja clave
+                        </span>
+                      </span>
+                      <p className="text-lg font-medium leading-relaxed text-white lg:flex-1">
+                        {benefit}
+                      </p>
+                      <span className="inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.35em] text-brand-gold/90 transition duration-500 group-hover:translate-x-1 group-hover:text-white">
+                        Confianza VR
+                        <span
+                          className="h-px w-8 bg-gradient-to-r from-brand-gold/90 to-transparent"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           </div>
-          <div className="benefits-grid relative z-10 mx-auto mt-12 grid max-w-[1400px] gap-10 px-6 text-white/75 sm:grid-cols-2 sm:px-12 lg:grid-cols-3 lg:px-16">
-            {benefits.map((benefit, index) => (
-              <article
-                key={benefit}
-                className="benefit-flow group flex flex-col gap-3 pl-8 text-left transition duration-500 ease-out hover:-translate-y-1 hover:text-white"
-                style={{ animationDelay: `${index * 0.08}s` }}
-              >
-                <span className="text-[11px] font-semibold uppercase tracking-[0.35em] text-white/45">
-                  {String(index + 1).padStart(2, "0")} / Ventaja clave
+        </div>
+      </section>
+
+      {/* PROPÓSITO + MÉTRICAS */}
+      <section className="px-6 py-6">
+        <div className="purpose-suite relative mx-auto max-w-[960px]">
+          <span
+            aria-hidden="true"
+            className="purpose-suite__halo pointer-events-none absolute inset-[-12%] rounded-[80px]"
+          />
+          <div className="purpose-suite__grid relative z-10">
+            <div className="purpose-suite__story">
+              <div className="purpose-suite__story-top">
+                <span aria-hidden="true" />
+                <span>Propósito</span>
+                <span aria-hidden="true" />
+                <span>Estilo</span>
+                <span aria-hidden="true" />
+              </div>
+              <TypewriterHeadline
+                className="purpose-suite__headline text-[24px] font-semibold leading-tight md:text-[32px]"
+                text={`INVIERTE CON PROPÓSITO,\nVIVE CON ESTILO`}
+                duration={2800}
+              />
+              <div className="purpose-suite__note">
+                <span className="purpose-suite__note-pill">
+                  Proyectos únicos, beneficios exclusivos.
                 </span>
-                <p className="text-base font-medium leading-relaxed text-white transition-colors duration-500 group-hover:text-brand-gold">
-                  {benefit}
+              </div>
+            </div>
+            <div className="purpose-suite__metrics">
+              <div className="purpose-suite__metrics-copy">
+                <p className="label">Confianza</p>
+                <h3>
+                  Cada número representa una historia de confianza auténtica.
+                </h3>
+                <p>
+                  Métricas que reflejan la experiencia de quienes nos eligen
+                  para gestionar sus inversiones y nuevos hogares.
                 </p>
-                <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.35em] text-brand-gold/80 transition duration-500 group-hover:translate-x-1 group-hover:text-white">
-                  Confianza VR
-                  <span
-                    className="h-[1px] w-10 bg-gradient-to-r from-brand-gold to-transparent"
-                    aria-hidden="true"
-                  />
-                </span>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SECCIÓN: PROPÓSITO */}
-      <section className="px-6 py-16">
-        <div className="purpose-banner relative mx-auto max-w-7xl overflow-hidden rounded-[56px] px-8 py-16 text-center text-white md:px-16 md:text-left">
-          <div className="purpose-rings" aria-hidden="true" />
-          <div className="purpose-orbit" aria-hidden="true" />
-          <div className="relative z-10 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(280px,0.8fr)] md:items-center">
-            <div className="space-y-6">
-              <h3 className="font-display text-[34px] font-semibold leading-tight tracking-[0.08em] uppercase md:text-[46px]">
-                INVIERTE CON PROPÓSITO,
-                <span className="block text-[32px] tracking-[0.2em] text-white/85 md:text-[40px]">
-                  VIVE CON ESTILO
-                </span>
-              </h3>
-            </div>
-            <div className="purpose-pill rounded-[999px] border border-white/40 bg-white/80 px-8 py-6 shadow-[0_25px_80px_rgba(10,23,56,0.25)] backdrop-blur">
-              <p className="text-base font-medium text-brand-navy/80 md:text-lg">
-                Proyectos únicos, beneficios exclusivos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECCIÓN: ESTADÍSTICAS */}
-      <section className="px-6 py-20">
-        <div className="metrics-lab relative mx-auto max-w-7xl overflow-hidden rounded-[48px] px-8 py-16 md:px-16">
-          <div className="metrics-grid relative z-10 grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-            <div className="space-y-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.5em] text-brand-gold/80">
-                Confianza
-              </p>
-              <h3 className="text-2xl font-semibold text-brand-navy md:text-[34px] md:leading-[1.2]">
-                Cada número representa una historia de confianza auténtica.
-              </h3>
-              <p className="text-sm text-brand-mute">
-                Métricas que reflejan la experiencia de quienes nos eligen para
-                gestionar sus inversiones y nuevos hogares.
-              </p>
-            </div>
-            <div className="metric-track grid gap-5 sm:grid-cols-3">
-              <article className="metric-tile">
-                <div className="metric-node">
+              </div>
+              <div className="purpose-suite__metrics-cards">
+                <article className="metric-chip metric-chip--hero">
                   <AnimatedCounter
                     value={180}
                     suffix="+"
-                    className="block text-4xl font-semibold text-brand-navy md:text-[42px]"
+                    className="block text-3xl font-semibold text-white md:text-[36px]"
                   />
-                  <p className="text-sm text-brand-mute">
+                  <p>
                     Familias e inversionistas concretaron su proyecto con VR
                     Inmobiliaria.
                   </p>
-                </div>
-              </article>
-              <article className="metric-tile">
-                <div className="metric-node">
+                </article>
+                <article className="metric-chip metric-chip--accent">
                   <AnimatedCounter
                     value={96}
                     suffix="%"
-                    className="block text-4xl font-semibold text-brand-navy md:text-[42px]"
+                    className="block text-2xl font-semibold text-brand-navy md:text-[30px]"
                   />
-                  <p className="text-sm text-brand-mute">
+                  <p>
                     Califican nuestra atención como excepcional por su cercanía
                     y personalización.
                   </p>
-                </div>
-              </article>
-              <article className="metric-tile">
-                <div className="metric-node">
-                  <span className="flex items-baseline gap-1 text-4xl font-semibold text-brand-navy md:text-[42px]">
+                </article>
+                <article className="metric-chip">
+                  <span className="flex items-baseline gap-1 text-2xl font-semibold text-brand-navy md:text-[30px]">
                     <AnimatedCounter value={24} className="leading-none" />
                     <span className="text-base font-medium uppercase tracking-[0.3em] text-brand-navy/70 md:text-lg">
                       hrs
                     </span>
                   </span>
-                  <p className="text-sm text-brand-mute">
+                  <p>
                     Tiempo máximo para recibir respuesta de un asesor
                     especializado.
                   </p>
-                </div>
-              </article>
+                </article>
+              </div>
             </div>
           </div>
         </div>
