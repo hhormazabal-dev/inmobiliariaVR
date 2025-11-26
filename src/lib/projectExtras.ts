@@ -206,7 +206,7 @@ const DATA: Array<
     reserva: 400000,
   },
   {
-    name: "Barrio Centeno",
+    name: "Barrio Zenteno",
     comuna: "Santiago Centro",
     tipologias: "1-2D / 1-2B",
     bono_pie: "0,1",
