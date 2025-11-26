@@ -9,7 +9,6 @@ const DATA = [
   { name: "BW815", comuna: "LA FLORIDA", uf_min: "3020" },
   { name: "MOOD", comuna: "LA FLORIDA", uf_min: "2824" },
   { name: "Liverpool", comuna: "LA FLORIDA", uf_min: "2081" },
-  { name: "Parque Germania", comuna: "Muerto Montt", uf_min: "2529" },
   { name: "TRINIDAD III", comuna: "LA CISTERNA", uf_min: "2153" },
   { name: "PLAZA CERVANTES - B", comuna: "LA CISTERNA", uf_min: "2129" },
   { name: "DON CLAUDIO", comuna: "LA CISTERNA", uf_min: "2850" },

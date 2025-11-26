@@ -55,13 +55,6 @@ const DATA: Array<
     reserva: 300000,
   },
   {
-    name: "Parque Germania",
-    comuna: "Puerto Montt",
-    tipologias: "STUDIO 1 • 2 y 3 DORMS; DÚPLEX 2 y 3 DORMS",
-    bono_pie: "consultar",
-    reserva: 400000,
-  },
-  {
     name: "Trinidad III",
     comuna: "La Cisterna",
     tipologias: "2-3D / 1-2B",
@@ -269,13 +262,6 @@ const DATA: Array<
     bono_pie: "0,1",
     credito_interno: "0,1",
     reserva: 250000,
-  },
-  {
-    name: "Parque Germania",
-    comuna: "Puerto Montt",
-    tipologias: "STUDIO-1-2-3D / DUPLEX",
-    bono_pie: "0,1",
-    reserva: 400000,
   },
   {
     name: "Aldunate",
