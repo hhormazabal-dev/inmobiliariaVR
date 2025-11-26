@@ -76,17 +76,6 @@ export default function FeaturedProjectCard({ project }: Props) {
             className="object-cover transition duration-500 group-hover:scale-[1.05]"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
-          {/* Badges discretas */}
-          {project.arriendoGarantizado && (
-            <span className="absolute left-3 top-3 rounded-full border border-white/70 bg-white/90 px-2.5 py-1 text-[11px] font-medium text-brand-navy shadow-sm">
-              Arriendo garantizado
-            </span>
-          )}
-          {project.creditoInterno && (
-            <span className="absolute right-3 top-3 rounded-full border border-white/70 bg-white/90 px-2.5 py-1 text-[11px] font-medium text-brand-navy shadow-sm">
-              Crédito interno
-            </span>
-          )}
           {project.entrega === "inmediata" && (
             <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-brand-mute">
               Entrega inmediata
