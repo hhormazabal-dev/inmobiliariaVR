@@ -17,13 +17,7 @@ const parseTipologias = (input?: string | null) => {
     .map((value) => value.replace(/\s{2,}/g, " "));
 };
 
-const mapEntrega = (status: string | null): Project["entrega"] => {
-  if (!status) return "en_verde";
-  const normalized = status.toLowerCase();
-  if (normalized.includes("inmediata")) return "inmediata";
-  if (normalized.includes("blanco")) return "en_blanco";
-  return "en_verde";
-};
+const mapEntrega = (_status: string | null): Project["entrega"] => "inmediata";
 
 const normalizeDescripcion = (raw?: string | null) => {
   if (!raw) {

@@ -162,9 +162,7 @@ export default function Footer() {
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
     "Hola, quiero información de proyectos y agendar una asesoría gratuita con VR Inmobiliaria.",
   )}`;
-  const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const calLink = process.env.NEXT_PUBLIC_CAL_LINK || "/contacto";
   const [open, setOpen] = useState(false);
   const {
     formAction,
@@ -350,6 +348,9 @@ export default function Footer() {
                   </Link>
                 </div>
               </div>
+              <p className="mt-3 text-center text-[11px] text-brand-mute/70 md:text-right">
+                Ignite. Execute. Scale.
+              </p>
             </div>
           </div>
         </div>

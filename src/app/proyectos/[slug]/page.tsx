@@ -167,12 +167,8 @@ function parseTipologias(input?: string | null) {
     .filter(Boolean);
 }
 
-function mapEntrega(status: unknown): Project["entrega"] {
-  if (typeof status !== "string") return "en_verde";
-  const normalized = status.toLowerCase();
-  if (normalized.includes("inmediata")) return "inmediata";
-  if (normalized.includes("blanco")) return "en_blanco";
-  return "en_verde";
+function mapEntrega(_status: unknown): Project["entrega"] {
+  return "inmediata";
 }
 
 function imageOrFallback(value?: string | null, fallback?: string | null) {
@@ -378,9 +374,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const waHref = waPhone
     ? `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`
     : null;
-  const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const calLink = process.env.NEXT_PUBLIC_CAL_LINK || "/contacto";
 
   const priceLabel = (() => {
     const min = formatUf(project.ufMin);

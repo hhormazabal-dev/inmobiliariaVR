@@ -29,7 +29,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Departamentos de autor con subsidio DS19 y terminaciones cálidas para familias emergentes.",
       tipologias: ["1D", "2D"],
       desdeUF: 2600,
-      entrega: "en_verde",
+      entrega: "inmediata",
       creditoInterno: true,
       imagen: "la-cisterna/carvajal/portada.jpg",
     },
@@ -42,7 +42,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Condominio conectado a polos industriales y a la futura Línea 3. Ideal para renta segura.",
       tipologias: ["2D", "3D"],
       desdeUF: 2300,
-      entrega: "en_verde",
+      entrega: "inmediata",
       creditoInterno: true,
       imagen: "quilicura/plaza-quilicura/portada.jpg",
     },
@@ -55,7 +55,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Programa mixto de oficinas, locales y viviendas junto a Vespucio Sur y Mall Plaza.",
       tipologias: ["Studio", "1D", "2D"],
       desdeUF: 2700,
-      entrega: "en_blanco",
+      entrega: "inmediata",
       arriendoGarantizado: false,
       creditoInterno: true,
     },
@@ -68,7 +68,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Amenities completos, rooftop y unidades compactas pensadas para arriendo flexible o primera vivienda.",
       tipologias: ["Studio", "1D", "2D"],
       desdeUF: 3100,
-      entrega: "en_verde",
+      entrega: "inmediata",
       imagen:
         "https://twixglfzfcdtwklpstvr.supabase.co/storage/v1/object/public/projects/nunoa/mood/portada.jpg",
     },
@@ -81,7 +81,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Edificio compacto cercano a Metro Macul con programas de 1 a 3 dormitorios.",
       tipologias: ["1D", "2D", "3D"],
       desdeUF: 2550,
-      entrega: "en_verde",
+      entrega: "inmediata",
       creditoInterno: true,
     },
   },
@@ -93,7 +93,7 @@ const SHOWCASE_TARGETS: ShowcaseTarget[] = [
         "Proyecto corporativo-residencial en Ciudad Empresarial, perfecto para renta estable.",
       tipologias: ["Studio", "1D", "2D"],
       desdeUF: 2950,
-      entrega: "en_verde",
+      entrega: "inmediata",
       arriendoGarantizado: true,
       imagen: "huechuraba/conecta/portada.jpg",
     },
@@ -112,13 +112,7 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
       ? createClient(url, key, { auth: { persistSession: false } })
       : null;
 
-  const mapEntrega = (value: unknown): Project["entrega"] => {
-    if (typeof value !== "string") return "en_verde";
-    const normalized = value.toLowerCase();
-    if (normalized.includes("inmediata")) return "inmediata";
-    if (normalized.includes("blanco")) return "en_blanco";
-    return "en_verde";
-  };
+  const mapEntrega = (_value: unknown): Project["entrega"] => "inmediata";
 
   const projects: Project[] = [];
 

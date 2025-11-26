@@ -37,7 +37,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const fallbackBrochure =
     process.env.NEXT_PUBLIC_BROCHURE_LINK ||
     process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+    "/contacto";
   const [brochureUrl, setBrochureUrl] = useState<string>(fallbackBrochure);
 
   useEffect(() => {

@@ -5,9 +5,7 @@ export default function ContactBanner() {
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
     "Hola, quiero coordinar una asesoría gratuita con VR Inmobiliaria.",
   )}`;
-  const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const calLink = process.env.NEXT_PUBLIC_CAL_LINK || "/contacto";
 
   return (
     <section className="relative mt-20 w-full overflow-hidden">

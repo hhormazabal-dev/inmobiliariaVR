@@ -50,9 +50,7 @@ export default function FeaturedProjectCard({ project }: Props) {
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waText = `Hola, me interesa ${project.titulo} (${project.comuna}) desde ${project.desdeUF} UF. ¿Podemos coordinar una asesoría gratuita?`;
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
-  const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const calLink = process.env.NEXT_PUBLIC_CAL_LINK || "/contacto";
   const descripcion =
     project.descripcion?.trim() ||
     "Consulta con nuestro equipo para conocer todos los detalles de este proyecto.";
@@ -63,7 +61,7 @@ export default function FeaturedProjectCard({ project }: Props) {
         whileHover={{ y: -6 }}
         whileTap={{ scale: 0.99 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/60 bg-[radial-gradient(circle_at_8%_0%,rgba(237,201,103,0.32),rgba(255,255,255,0.96)55%),linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.86))] shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
+        className="group relative mx-auto flex h-full w-full max-w-[360px] flex-col overflow-hidden rounded-3xl border border-white/60 bg-[radial-gradient(circle_at_8%_0%,rgba(237,201,103,0.32),rgba(255,255,255,0.96)55%),linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.86))] shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm sm:max-w-[380px]"
       >
         <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(237,201,103,0.32),rgba(255,255,255,0)),radial-gradient(circle_at_80%_20%,rgba(14,33,73,0.08),rgba(255,255,255,0))] opacity-0 transition group-hover:opacity-100" />
         {/* Imagen */}

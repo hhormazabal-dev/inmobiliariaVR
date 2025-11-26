@@ -49,7 +49,7 @@ export default async function HomePage() {
       {/* SECCIÓN: PROYECTOS DESTACADOS */}
       <section className="pb-16 pt-12">
         {/* 2) Header + Grid */}
-        <div className="mx-auto mt-0 max-w-7xl px-6">
+        <div className="mx-auto mt-0 max-w-6xl px-6">
           <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-xl">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold">
@@ -72,7 +72,7 @@ export default async function HomePage() {
             </Link>
           </header>
 
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-8">
+          <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {destacados.map((p) => (
               <FeaturedProjectCard key={p.id} project={p} />
             ))}

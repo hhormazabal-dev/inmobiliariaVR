@@ -21,21 +21,6 @@ export type FeaturedTarget = {
 
 export const FEATURED_TARGETS: FeaturedTarget[] = [
   {
-    name: "Sky Providencia",
-    comuna: "Providencia",
-    fallback: {
-      desdeUF: 4320,
-      tipologias: ["1D", "2D", "3D"],
-      entrega: "en_blanco" as const,
-      arriendoGarantizado: false,
-      creditoInterno: true,
-      descripcion:
-        "Departamentos con vistas al Parque Metropolitano, amenities exclusivos y conectividad sobresaliente.",
-      imagenPath:
-        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-    },
-  },
-  {
     name: "Own Ñuñoa",
     comuna: "Ñuñoa",
     fallback: {
@@ -56,7 +41,7 @@ export const FEATURED_TARGETS: FeaturedTarget[] = [
     fallback: {
       desdeUF: 2850,
       tipologias: ["1D", "2D"],
-      entrega: "en_verde" as const,
+      entrega: "inmediata" as const,
       arriendoGarantizado: true,
       creditoInterno: true,
       descripcion:
@@ -94,13 +79,7 @@ export async function fetchFeaturedProjects(): Promise<Project[]> {
         })
       : null;
 
-  const mapEntrega = (status: unknown): Project["entrega"] => {
-    if (typeof status !== "string") return "en_verde";
-    const normalized = status.toLowerCase();
-    if (normalized.includes("inmediata")) return "inmediata";
-    if (normalized.includes("blanco")) return "en_blanco";
-    return "en_verde";
-  };
+  const mapEntrega = (_status: unknown): Project["entrega"] => "inmediata";
 
   const results: Project[] = [];
 

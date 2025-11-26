@@ -124,9 +124,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const calLink =
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "https://cal.com/tu-org/visita-proyecto";
+  const calLink = process.env.NEXT_PUBLIC_CAL_LINK || "/contacto";
   const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "";
   const waHref = `https://wa.me/${waPhone}?text=${encodeURIComponent(
     "Hola, quiero hablar con un asesor de VR Inmobiliaria sobre proyectos disponibles.",
