@@ -63,11 +63,11 @@ export default function FeaturedProjectCard({ project }: Props) {
         whileHover={{ y: -6 }}
         whileTap={{ scale: 0.99 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="group relative overflow-hidden rounded-3xl border border-white/60 bg-[radial-gradient(circle_at_8%_0%,rgba(237,201,103,0.32),rgba(255,255,255,0.96)55%),linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.86))] shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
+        className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/60 bg-[radial-gradient(circle_at_8%_0%,rgba(237,201,103,0.32),rgba(255,255,255,0.96)55%),linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.86))] shadow-[0_20px_65px_rgba(14,33,73,0.12)] backdrop-blur-sm"
       >
         <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_5%,rgba(237,201,103,0.32),rgba(255,255,255,0)),radial-gradient(circle_at_80%_20%,rgba(14,33,73,0.08),rgba(255,255,255,0))] opacity-0 transition group-hover:opacity-100" />
         {/* Imagen */}
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-48 w-full flex-shrink-0 overflow-hidden">
           <SafeImage
             src={coverImage}
             fallbackSrc={fallbackImage}
@@ -95,13 +95,29 @@ export default function FeaturedProjectCard({ project }: Props) {
         </div>
 
         {/* Contenido */}
-        <div className="relative flex flex-col gap-5 p-6">
-          <header className="flex items-start justify-between gap-5">
-            <div>
-              <h3 className="text-lg font-semibold text-brand-navy">
+        <div className="relative flex h-full flex-col gap-5 p-6">
+          <header className="flex min-h-[92px] items-start justify-between gap-5">
+            <div className="space-y-1">
+              <h3
+                className="text-lg font-semibold leading-tight text-brand-navy"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
                 {project.titulo}
               </h3>
-              <p className="text-sm text-brand-mute">
+              <p
+                className="text-sm leading-tight text-brand-mute"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
                 {project.comuna} · {project.tipologias.join(" / ")}
               </p>
             </div>
@@ -116,11 +132,22 @@ export default function FeaturedProjectCard({ project }: Props) {
           </header>
 
           <div className="rounded-2xl bg-[rgba(237,201,103,0.15)] p-4 text-sm text-brand-mute">
-            <p>{descripcion}</p>
+            <p
+              className="leading-relaxed"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                minHeight: "96px",
+              }}
+            >
+              {descripcion}
+            </p>
           </div>
 
           {/* CTAs minimalistas */}
-          <footer className="flex flex-wrap items-center gap-3">
+          <footer className="mt-auto flex flex-wrap items-center gap-3">
             <button
               onClick={() => setOpen(true)}
               className="rounded-full border border-brand-navy/10 bg-white px-4 py-2 text-sm font-medium text-brand-navy transition hover:border-brand-navy/25 hover:bg-white/90"

@@ -3,6 +3,7 @@ import { getProjectExtras } from "@/lib/projectExtras";
 import ProjectCard from "@/components/ProjectCard";
 import { prettifyName } from "@/lib/territoryMeta";
 import type { CatalogProject } from "@/types/catalogProject";
+import { buildProjectSlug } from "@/lib/projectSlug";
 
 export const revalidate = 120;
 
@@ -22,6 +23,26 @@ type ProjectRow = {
   credito_interno?: string | number | null;
   reserva?: string | number | null;
 };
+
+const MANUAL_PROJECTS: CatalogProject[] = [
+  {
+    id: "gorbea-parcelas-5000",
+    name: "Parcelas Gorbea 5000 m2",
+    comuna: "Gorbea",
+    uf_min: 703,
+    uf_max: 703,
+    status: "Entrega inmediata",
+    cover_url: "parcelas/portada.jpg",
+    description:
+      "Parcelas exclusivas de 5.000 m² a minutos del Lago Villarrica, con rol y escritura, pozo de 10.000 litros, proyecto de luz/agua y cierres listos para construir. Precio $26.000.000; paga 50% al contado y 50% en 12 cuotas.",
+    gallery_urls: null,
+    tipologias: "Parcelas 5.000 m²",
+    bono_pie: "50% al contado",
+    descuento: null,
+    credito_interno: "50% en 12 cuotas",
+    reserva: null,
+  },
+];
 
 function requireEnv(name: string) {
   const value = process.env[name];
@@ -59,8 +80,12 @@ async function fetchCatalog(): Promise<{
   const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
   const key = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
+  const manualComunas = Array.from(
+    new Set(MANUAL_PROJECTS.map((project) => project.comuna)),
+  ).sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }));
+
   if (!url || !key) {
-    return { comunas: [], projects: [] };
+    return { comunas: manualComunas, projects: [...MANUAL_PROJECTS] };
   }
 
   const supabase = createClient(url, key, {
@@ -143,6 +168,22 @@ async function fetchCatalog(): Promise<{
 
     projectsList.push(project);
   }
+
+  for (const project of MANUAL_PROJECTS) {
+    const manualSlug = buildProjectSlug(project.name, project.comuna);
+    const exists = projectsList.some(
+      (item) => buildProjectSlug(item.name, item.comuna) === manualSlug,
+    );
+    if (exists) continue;
+
+    projectsList.push(project);
+    if (!comunasSet.has(project.comuna)) {
+      comunasSet.add(project.comuna);
+      comunas.push(project.comuna);
+    }
+  }
+
+  comunas.sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }));
 
   return { comunas, projects: projectsList };
 }

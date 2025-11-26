@@ -64,6 +64,20 @@ export const FEATURED_TARGETS: FeaturedTarget[] = [
       imagenPath: "/RM.jpeg",
     },
   },
+  {
+    name: "Parcelas Gorbea 5000 m2",
+    comuna: "Gorbea",
+    fallback: {
+      desdeUF: 703,
+      tipologias: ["Parcelas 5.000 m²"],
+      entrega: "inmediata",
+      arriendoGarantizado: false,
+      creditoInterno: true,
+      descripcion:
+        "Parcelas de 5.000 m² con rol y escritura, pozo de 10.000 litros, cierres y proyectos de luz/agua, a minutos del Lago Villarrica. Modalidad 50% contado + 50% en 12 cuotas (precio $26.000.000).",
+      imagenPath: "supabase:parcelas/portada.jpg",
+    },
+  },
 ];
 
 export async function fetchFeaturedProjects(): Promise<Project[]> {
