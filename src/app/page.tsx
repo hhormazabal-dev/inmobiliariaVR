@@ -64,12 +64,21 @@ export default async function HomePage() {
                 tranquilidad.
               </p>
             </div>
-            <Link
-              href="/proyectos"
-              className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.2)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
-            >
-              Explorar proyectos
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/proyectos"
+                className="inline-flex items-center justify-center rounded-full border border-brand-navy/15 bg-gradient-to-r from-brand-navy via-brand-gold to-brand-gold px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(237,201,103,0.2)] transition hover:shadow-[0_22px_60px_rgba(237,201,103,0.28)]"
+              >
+                Explorar proyectos
+              </Link>
+              <a
+                href="#beneficios"
+                className="inline-flex items-center justify-center rounded-full border border-brand-navy bg-brand-navy px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(14,33,73,0.2)] transition hover:bg-brand-navy/90 hover:text-white hover:shadow-[0_20px_48px_rgba(14,33,73,0.28)]"
+                style={{ backgroundColor: "#0E2149", color: "#F7F7F7" }}
+              >
+                Conoce nuestros beneficios
+              </a>
+            </div>
           </header>
 
           <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -80,7 +89,10 @@ export default async function HomePage() {
         </div>
 
         {/* 3) Bloque Beneficios */}
-        <div className="benefits-atrium relative mt-24 w-full overflow-hidden py-24 text-white sm:mt-28 lg:mt-32">
+        <div
+          id="beneficios"
+          className="benefits-atrium relative mt-24 w-full overflow-hidden py-24 text-white sm:mt-28 lg:mt-32"
+        >
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#080d1e] via-[#0a1832] to-[#050a18]"
