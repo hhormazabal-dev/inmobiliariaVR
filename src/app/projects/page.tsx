@@ -5,7 +5,7 @@ import { prettifyName } from "@/lib/territoryMeta";
 import type { CatalogProject } from "@/types/catalogProject";
 import { buildProjectSlug } from "@/lib/projectSlug";
 
-export const revalidate = 120;
+export const revalidate = 0;
 
 const BLOCKED_SLUGS = new Set([
   buildProjectSlug("Parque Germania", "Puerto Montt"),
