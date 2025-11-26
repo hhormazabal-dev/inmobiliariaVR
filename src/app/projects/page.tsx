@@ -7,6 +7,11 @@ import { buildProjectSlug } from "@/lib/projectSlug";
 
 export const revalidate = 120;
 
+const BLOCKED_SLUGS = new Set([
+  buildProjectSlug("Parque Germania", "Puerto Montt"),
+  buildProjectSlug("Parque Germania", "Muerto Montt"),
+]);
+
 type ProjectRow = {
   id: string;
   name: string | null;
@@ -121,6 +126,9 @@ async function fetchCatalog(): Promise<{
 
   for (const row of projectsData ?? []) {
     if (!row.id || !row.name || !row.comuna) continue;
+
+    const blockedSlug = buildProjectSlug(row.name, row.comuna);
+    if (BLOCKED_SLUGS.has(blockedSlug)) continue;
 
     const comuna = row.comuna.trim();
     const extras = getProjectExtras(row.name.trim(), comuna);
