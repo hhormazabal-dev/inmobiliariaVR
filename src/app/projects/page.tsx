@@ -12,6 +12,10 @@ const BLOCKED_SLUGS = new Set([
   buildProjectSlug("Parque Germania", "Muerto Montt"),
 ]);
 
+const NAME_OVERRIDES = new Map<string, string>([
+  [buildProjectSlug("Barrio Centeno", "Santiago Centro"), "Barrio Zenteno"],
+]);
+
 type ProjectRow = {
   id: string;
   name: string | null;
@@ -127,15 +131,18 @@ async function fetchCatalog(): Promise<{
   for (const row of projectsData ?? []) {
     if (!row.id || !row.name || !row.comuna) continue;
 
-    const blockedSlug = buildProjectSlug(row.name, row.comuna);
+    const baseSlug = buildProjectSlug(row.name, row.comuna);
+    const overrideName = NAME_OVERRIDES.get(baseSlug);
+    const name = (overrideName ?? row.name).trim();
+    const blockedSlug = buildProjectSlug(name, row.comuna);
     if (BLOCKED_SLUGS.has(blockedSlug)) continue;
 
     const comuna = row.comuna.trim();
-    const extras = getProjectExtras(row.name.trim(), comuna);
+    const extras = getProjectExtras(name, comuna);
     const rowAny = row as Record<string, unknown>;
     const project: CatalogProject = {
       id: row.id,
-      name: row.name.trim(),
+      name,
       comuna,
       uf_min: toNumber(row.uf_min),
       uf_max: toNumber(row.uf_max),
