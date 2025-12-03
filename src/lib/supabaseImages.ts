@@ -18,8 +18,11 @@ export function normalizeStoragePath(input?: string | null) {
 
   let stripped = input
     .replace(/^https?:\/\/[^/]+\/storage\/v1\/object\/public\/?/i, "")
+    .replace(/^https?:\/\/[^/]+\/object\/public\/?/i, "")
+    .replace(/^https?:\/\/[^/]+\/projects?\//i, "")
     .replace(/^\/+/, "")
-    .replace(/^storage\/v1\/object\/public\/?/i, "");
+    .replace(/^storage\/v1\/object\/public\/?/i, "")
+    .replace(/^object\/public\/?/i, "");
 
   while (/^projects?\//i.test(stripped)) {
     stripped = stripped.replace(/^projects?\//i, "");

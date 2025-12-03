@@ -64,6 +64,19 @@ function slugify(input: string) {
     .replace(/(^-|-$)/g, "");
 }
 
+function withDownloadParam(url?: string | null) {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (!parsed.searchParams.has("download")) {
+      parsed.searchParams.set("download", "1");
+    }
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 export async function listProjectImages(
   projectName: string,
   coverUrl?: string,
@@ -108,7 +121,7 @@ export async function listProjectImages(
   }
 
   const apiResult = await fetchViaApi();
-  let brochure: string | null = apiResult.brochure ?? null;
+  let brochure: string | null = withDownloadParam(apiResult.brochure) ?? null;
   let bestImages = Array.from(
     new Set(
       (apiResult.images ?? [])
@@ -126,16 +139,31 @@ export async function listProjectImages(
   const slugName = slugify(folderFromName || projectName);
   const slugComuna = slugify(comuna ?? "");
 
+  const brochureCandidates: string[] = [];
+  const addBrochureCandidate = (folder: string) => {
+    if (!folder) return;
+    const normalized = normalizeStoragePath(`${folder}/1.pdf`);
+    if (!normalized) return;
+    const url = withDownloadParam(toPublicStorageUrl(normalized));
+    if (url) {
+      brochureCandidates.push(url);
+    }
+  };
+
   const foldersToVisit = Array.from(
     new Set(
       [
-        folderFromName,
         folderFromUrl,
+        folderFromName,
         slugName,
         slugComuna && slugName ? `${slugComuna}/${slugName}` : "",
       ].filter(Boolean),
     ),
   );
+
+  for (const folder of foldersToVisit) {
+    addBrochureCandidate(folder);
+  }
 
   if (foldersToVisit.length === 0) {
     return { images: bestImages, brochure };
@@ -148,7 +176,7 @@ export async function listProjectImages(
     if (!path) return;
     const normalized = normalizeStoragePath(path);
     if (!normalized) return;
-    const url = toPublicStorageUrl(normalized);
+    const url = withDownloadParam(toPublicStorageUrl(normalized));
     if (!url) return;
     const preferred = /(?:^|\/)1\.pdf$/i.test(normalized);
     if (!brochure || preferred) {
@@ -339,6 +367,10 @@ export async function listProjectImages(
     console.warn(
       `[gallery] Solo se encontró 1 imagen para "${projectName}"${comuna ? ` en ${comuna}` : ""}.`,
     );
+  }
+
+  if (!brochure && brochureCandidates.length > 0) {
+    brochure = brochureCandidates[0];
   }
 
   return {

@@ -46,6 +46,19 @@ function folderFromPath(path: string) {
   return segments.join("/");
 }
 
+function withDownloadParam(url?: string | null) {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (!parsed.searchParams.has("download")) {
+      parsed.searchParams.set("download", "1");
+    }
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 async function gatherImages(
   client: SupabaseClient,
   name: string,
@@ -57,11 +70,21 @@ async function gatherImages(
   const storage = client.storage.from("projects");
   const storagePathSet = new Set<string>();
   let brochure: string | null = null;
+  const brochureCandidates: string[] = [];
+  const addBrochureCandidate = (folder: string) => {
+    if (!folder) return;
+    const normalized = normalizeStoragePath(`${folder}/1.pdf`);
+    if (!normalized) return;
+    const url = withDownloadParam(toPublicStorageUrl(normalized));
+    if (url) {
+      brochureCandidates.push(url);
+    }
+  };
   const setBrochureFromPath = (path: string | null | undefined) => {
     if (!path) return;
     const normalized = normalizeStoragePath(path);
     if (!normalized) return;
-    const url = toPublicStorageUrl(normalized);
+    const url = withDownloadParam(toPublicStorageUrl(normalized));
     if (!url) return;
     const preferred = /(?:^|\/)1\.pdf$/i.test(normalized);
     if (!brochure || preferred) {
@@ -70,8 +93,18 @@ async function gatherImages(
   };
 
   const resolvedNameFolder = resolveFolderName(name);
-  if (resolvedNameFolder) {
-    folders.add(resolvedNameFolder);
+  const slugNameInput = slugify(name);
+  const slugComunaInput = slugify(comuna ?? "");
+  const enqueueFolder = (folder: string) => {
+    if (!folder) return;
+    folders.add(folder);
+    addBrochureCandidate(folder);
+  };
+
+  enqueueFolder(resolvedNameFolder);
+  enqueueFolder(slugNameInput);
+  if (slugNameInput && slugComunaInput) {
+    enqueueFolder(`${slugComunaInput}/${slugNameInput}`);
   }
 
   const { data: rows, error } = await client
@@ -98,6 +131,7 @@ async function gatherImages(
       const normalizedCover = normalizeStoragePath(cover);
       if (normalizedCover) {
         folders.add(folderFromPath(cover));
+        addBrochureCandidate(folderFromPath(cover));
         const coverName = normalizedCover.split("/").pop() ?? normalizedCover;
         if (isPdfFile(coverName)) {
           setBrochureFromPath(normalizedCover);
@@ -114,15 +148,18 @@ async function gatherImages(
     const resolvedFolder = resolveFolderName(row.name ?? "");
     if (resolvedFolder) {
       folders.add(resolvedFolder);
+      addBrochureCandidate(resolvedFolder);
     }
 
     const slugName = slugify(row.name ?? "");
     if (slugName) {
       folders.add(slugName);
+      addBrochureCandidate(slugName);
     }
     const slugComuna = slugify(row.comuna ?? "");
     if (slugName && slugComuna) {
       folders.add(`${slugComuna}/${slugName}`);
+      addBrochureCandidate(`${slugComuna}/${slugName}`);
     }
 
     for (const entry of row.gallery_urls ?? []) {
@@ -174,6 +211,7 @@ async function gatherImages(
     const folder = folderFromPath(coverUrl);
     if (folder) {
       folders.add(folder);
+      addBrochureCandidate(folder);
     }
     const normalizedCover = normalizeStoragePath(coverUrl);
     if (normalizedCover) {
@@ -266,6 +304,11 @@ async function gatherImages(
       folders.size
     } files:${files.length} unique:${result.length}`,
   );
+
+  if (!brochure && brochureCandidates.length > 0) {
+    brochure = brochureCandidates[0];
+  }
+
   return { images: result, brochure };
 }
 
