@@ -102,10 +102,10 @@ async function gatherImages(
   };
 
   enqueueFolder(resolvedNameFolder);
-  enqueueFolder(slugNameInput);
   if (slugNameInput && slugComunaInput) {
     enqueueFolder(`${slugComunaInput}/${slugNameInput}`);
   }
+  enqueueFolder(slugNameInput);
 
   const { data: rows, error } = await client
     .from("projects")
@@ -152,14 +152,14 @@ async function gatherImages(
     }
 
     const slugName = slugify(row.name ?? "");
-    if (slugName) {
-      folders.add(slugName);
-      addBrochureCandidate(slugName);
-    }
     const slugComuna = slugify(row.comuna ?? "");
     if (slugName && slugComuna) {
       folders.add(`${slugComuna}/${slugName}`);
       addBrochureCandidate(`${slugComuna}/${slugName}`);
+    }
+    if (slugName) {
+      folders.add(slugName);
+      addBrochureCandidate(slugName);
     }
 
     for (const entry of row.gallery_urls ?? []) {

@@ -159,10 +159,10 @@ export async function listProjectImages(
   const foldersToVisit = Array.from(
     new Set(
       [
+        slugComuna && slugName ? `${slugComuna}/${slugName}` : "",
         folderFromUrl,
         folderFromName,
         slugName,
-        slugComuna && slugName ? `${slugComuna}/${slugName}` : "",
       ].filter(Boolean),
     ),
   );
