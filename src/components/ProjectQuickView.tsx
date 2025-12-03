@@ -8,6 +8,7 @@ import { listProjectImages } from "@/lib/gallery";
 import SafeImage from "@/components/SafeImage";
 import { toPublicStorageUrl } from "@/lib/supabaseImages";
 import { FALLBACK_IMAGE_DATA } from "@/lib/fallbackImage";
+import { resolveFolderName } from "@/lib/galleryFolders";
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -34,10 +35,27 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const coverImage = toPublicStorageUrl(project.imagen) ?? FALLBACK_IMAGE_DATA;
   const [images, setImages] = useState<string[]>(() => [coverImage]);
   const [idx, setIdx] = useState(0);
-  const fallbackBrochure =
-    process.env.NEXT_PUBLIC_BROCHURE_LINK ||
-    process.env.NEXT_PUBLIC_CAL_LINK ||
-    "/contacto";
+  const brochureFolder = resolveFolderName(project.titulo);
+  const brochureFromFolder =
+    brochureFolder && toPublicStorageUrl(`${brochureFolder}/1.pdf`);
+  const ensureDownload = (url?: string | null) => {
+    if (!url) return url;
+    try {
+      const parsed = new URL(url);
+      if (!parsed.searchParams.has("download")) {
+        parsed.searchParams.set("download", "1");
+      }
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  };
+  const fallbackBrochure = ensureDownload(
+    brochureFromFolder ||
+      process.env.NEXT_PUBLIC_BROCHURE_LINK ||
+      process.env.NEXT_PUBLIC_CAL_LINK ||
+      "/contacto",
+  );
   const [brochureUrl, setBrochureUrl] = useState<string>(fallbackBrochure);
 
   useEffect(() => {
@@ -62,7 +80,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
       if (active) {
         setImages(unique.length > 0 ? unique : [coverImage]);
         if (brochure) {
-          setBrochureUrl(brochure);
+          setBrochureUrl(ensureDownload(brochure));
         }
       }
     }
