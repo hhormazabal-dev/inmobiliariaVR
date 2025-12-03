@@ -10,6 +10,7 @@ export const revalidate = 0;
 const BLOCKED_SLUGS = new Set([
   buildProjectSlug("Parque Germania", "Puerto Montt"),
   buildProjectSlug("Parque Germania", "Muerto Montt"),
+  buildProjectSlug("Mood", "Ñuñoa"),
 ]);
 
 const NAME_OVERRIDES = new Map<string, string>([
