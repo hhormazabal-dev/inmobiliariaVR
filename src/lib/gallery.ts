@@ -130,10 +130,6 @@ export async function listProjectImages(
     ),
   );
 
-  if (!supabase || !SUPABASE_URL) {
-    return { images: bestImages, brochure };
-  }
-
   const folderFromName = resolveFolderName(projectName);
   const folderFromUrl = extractFolderFromUrl(coverUrl);
   const slugName = slugify(folderFromName || projectName);
@@ -144,10 +140,20 @@ export async function listProjectImages(
     if (!folder) return;
     const normalized = normalizeStoragePath(`${folder}/1.pdf`);
     if (!normalized) return;
-    const url = withDownloadParam(toPublicStorageUrl(normalized));
-    if (url) {
-      brochureCandidates.push(url);
+    let url = withDownloadParam(toPublicStorageUrl(normalized));
+
+    // Si no hay SUPABASE_URL en el cliente, intenta derivar desde la portada
+    if (!url && coverUrl) {
+      try {
+        const parsed = new URL(coverUrl);
+        parsed.pathname = parsed.pathname.replace(/[^/]+$/, "1.pdf");
+        url = withDownloadParam(parsed.toString());
+      } catch {
+        // ignore
+      }
     }
+
+    if (url) brochureCandidates.push(url);
   };
 
   const foldersToVisit = Array.from(
@@ -163,6 +169,13 @@ export async function listProjectImages(
 
   for (const folder of foldersToVisit) {
     addBrochureCandidate(folder);
+  }
+
+  if (!supabase || !SUPABASE_URL) {
+    if (!brochure && brochureCandidates.length > 0) {
+      brochure = brochureCandidates[0];
+    }
+    return { images: bestImages, brochure };
   }
 
   if (foldersToVisit.length === 0) {
