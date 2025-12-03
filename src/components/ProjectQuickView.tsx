@@ -35,7 +35,20 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const coverImage = toPublicStorageUrl(project.imagen) ?? FALLBACK_IMAGE_DATA;
   const [images, setImages] = useState<string[]>(() => [coverImage]);
   const [idx, setIdx] = useState(0);
-  const brochureFolder = resolveFolderName(project.titulo);
+  const slugify = (input: string) =>
+    (input || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  const slugName = slugify(project.titulo);
+  const slugComuna = slugify(project.comuna);
+  const brochureFolder =
+    (slugComuna && slugName ? `${slugComuna}/${slugName}` : "") ||
+    resolveFolderName(project.titulo) ||
+    slugName;
   const brochureFromFolder =
     brochureFolder && toPublicStorageUrl(`${brochureFolder}/1.pdf`);
   const ensureDownload = (

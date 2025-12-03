@@ -1,3 +1,12 @@
+const slugify = (input: string) =>
+  (input || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 export const FOLDER_BY_NAME: Record<string, string> = {
   "All Ñuñoa": "All Nunoa",
   "All Ñuñoa II": "All Nunoa II",
@@ -18,6 +27,8 @@ export const FOLDER_BY_NAME: Record<string, string> = {
   LIVERPOOL: "la-florida/liverpool",
   "Plaza Quilicura": "quilicura/plaza-quilicura",
   "PLAZA QUILICURA": "quilicura/plaza-quilicura",
+  "Don Claudio": "la-cisterna/don-claudio",
+  "DON CLAUDIO": "la-cisterna/don-claudio",
   "Parcelas Gorbea 5.000 m²": "parcelas",
   "Parcelas Gorbea 5000 m2": "parcelas",
   "Gorbea Parcelas 5000 MTS2": "parcelas",
@@ -27,5 +38,5 @@ export const FOLDER_BY_NAME: Record<string, string> = {
 export function resolveFolderName(projectName: string) {
   const trimmed = projectName?.trim();
   if (!trimmed) return "";
-  return FOLDER_BY_NAME[trimmed] || trimmed;
+  return FOLDER_BY_NAME[trimmed] || slugify(trimmed);
 }
