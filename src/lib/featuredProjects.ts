@@ -79,7 +79,7 @@ export async function fetchFeaturedProjects(): Promise<Project[]> {
         })
       : null;
 
-  const mapEntrega = (_status: unknown): Project["entrega"] => "inmediata";
+  const mapEntrega = (): Project["entrega"] => "inmediata";
 
   const results: Project[] = [];
 
@@ -127,7 +127,7 @@ export async function fetchFeaturedProjects(): Promise<Project[]> {
           comuna: data.comuna ?? target.comuna,
           desdeUF: ufValue ?? target.fallback.desdeUF,
           tipologias,
-          entrega: mapEntrega(data.status) ?? target.fallback.entrega,
+          entrega: mapEntrega() ?? target.fallback.entrega,
           imagen: coverUrl ?? fallbackImage ?? FALLBACK_IMAGE_DATA,
           imagenFallback: fallbackImage,
           descripcion: data.description?.trim() ?? target.fallback.descripcion,

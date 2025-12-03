@@ -17,7 +17,7 @@ const parseTipologias = (input?: string | null) => {
     .map((value) => value.replace(/\s{2,}/g, " "));
 };
 
-const mapEntrega = (_status: string | null): Project["entrega"] => "inmediata";
+const mapEntrega = (): Project["entrega"] => "inmediata";
 
 const normalizeDescripcion = (raw?: string | null) => {
   if (!raw) {
@@ -61,7 +61,7 @@ export default function ProjectCard({ project }: Props) {
         ? creditValue !== "no" && creditValue !== "0"
         : Boolean(creditValue);
 
-    const entrega = mapEntrega(project.status);
+    const entrega = mapEntrega();
 
     return {
       id: project.id,

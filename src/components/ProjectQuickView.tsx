@@ -38,16 +38,19 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
   const brochureFolder = resolveFolderName(project.titulo);
   const brochureFromFolder =
     brochureFolder && toPublicStorageUrl(`${brochureFolder}/1.pdf`);
-  const ensureDownload = (url?: string | null) => {
-    if (!url) return url;
+  const ensureDownload = (
+    url?: string | null,
+    fallback: string = "/contacto",
+  ): string => {
+    const base = url || fallback;
     try {
-      const parsed = new URL(url);
+      const parsed = new URL(base);
       if (!parsed.searchParams.has("download")) {
         parsed.searchParams.set("download", "1");
       }
       return parsed.toString();
     } catch {
-      return url;
+      return base;
     }
   };
   const fallbackBrochure = ensureDownload(
@@ -80,7 +83,7 @@ export default function ProjectQuickView({ open, onClose, project }: Props) {
       if (active) {
         setImages(unique.length > 0 ? unique : [coverImage]);
         if (brochure) {
-          setBrochureUrl(ensureDownload(brochure));
+          setBrochureUrl(ensureDownload(brochure, fallbackBrochure));
         }
       }
     }

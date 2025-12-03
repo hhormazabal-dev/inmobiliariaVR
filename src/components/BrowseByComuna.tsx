@@ -112,7 +112,7 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
       ? createClient(url, key, { auth: { persistSession: false } })
       : null;
 
-  const mapEntrega = (_value: unknown): Project["entrega"] => "inmediata";
+  const mapEntrega = (): Project["entrega"] => "inmediata";
 
   const projects: Project[] = [];
 
@@ -159,7 +159,7 @@ async function fetchShowcaseProjects(): Promise<Project[]> {
           comuna: data.comuna ?? target.comuna,
           desdeUF: Number.isFinite(ufMin) ? ufMin : target.fallback.desdeUF,
           tipologias,
-          entrega: mapEntrega(data.status) ?? target.fallback.entrega,
+          entrega: mapEntrega() ?? target.fallback.entrega,
           arriendoGarantizado: target.fallback.arriendoGarantizado,
           creditoInterno: target.fallback.creditoInterno,
           descripcion: data.description?.trim() ?? target.fallback.descripcion,

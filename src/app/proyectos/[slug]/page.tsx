@@ -167,7 +167,7 @@ function parseTipologias(input?: string | null) {
     .filter(Boolean);
 }
 
-function mapEntrega(_status: unknown): Project["entrega"] {
+function mapEntrega(): Project["entrega"] {
   return "inmediata";
 }
 
@@ -290,9 +290,7 @@ async function fetchProjectDetail(slug: string): Promise<ProjectDetail | null> {
           name: row.name ?? fallbackTarget?.name ?? "Proyecto destacado",
           comuna: row.comuna ?? fallbackTarget?.comuna ?? "",
           entrega:
-            mapEntrega(row.status) ??
-            fallbackTarget?.fallback.entrega ??
-            "en_verde",
+            mapEntrega() ?? fallbackTarget?.fallback.entrega ?? "en_verde",
           descripcion,
           cover,
           gallery,
